@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, BookOpen, CalendarDays, MapPin, Palette, Phone, Search, ShoppingBasket } from "lucide-react";
 import { books, classes, events, products } from "@/lib/data";
 import { site } from "@/lib/site";
-import { Kanikonna, KeralaScape } from "@/components/Art";
+import { LotusBorder, Nilavilakku } from "@/components/Art";
 import { LogoIcon } from "@/components/Logo";
 import { BookCard, ClassCard, EventCard, ProductCard, SectionHead } from "@/components/ui";
 
@@ -25,25 +25,21 @@ export default function Home() {
   const auctions = products.filter((p) => p.auction);
   return (
     <>
-      {/* Hero: the library's name under a kanikonna branch, and the search box */}
+      {/* Hero: the library's name beside a lit nilavilakku, and the search box */}
       <section className="relative">
-        <div aria-hidden="true" className="-mt-2 h-36 overflow-hidden px-2 [mask-image:linear-gradient(black_55%,transparent)] sm:h-44 lg:hidden">
-          <Kanikonna className="mx-auto w-full max-w-xl" />
-        </div>
-        <Kanikonna className="pointer-events-none absolute top-2 right-0 hidden w-[min(540px,46%)] lg:block" />
-
-        <div className="relative mx-auto max-w-6xl px-5 lg:pt-16">
-          <div className="max-w-2xl">
-            <h1 className="font-ml text-[2.7rem] leading-[1.12] font-extrabold tracking-[-0.01em] text-ink sm:text-[4.2rem]">
+        <div className="relative mx-auto grid max-w-6xl items-center gap-4 px-5 pt-2 lg:grid-cols-[1fr_300px] lg:gap-16 lg:pt-12">
+          <Nilavilakku className="mx-auto h-52 w-auto sm:h-64 lg:order-2 lg:h-[420px]" />
+          <div className="max-w-2xl text-center lg:text-left">
+            <h1 className="font-ml text-[2.7rem] leading-[1.12] font-extrabold tracking-[-0.01em] text-royal sm:text-[4.2rem]">
               {site.nameMl}
             </h1>
-            <p className="mt-3 max-w-xl text-[18px] leading-relaxed text-ink-2 sm:text-xl">
+            <p className="mx-auto mt-3 max-w-xl text-[18px] leading-relaxed text-ink-2 sm:text-xl lg:mx-0">
               Puthanambalam&apos;s public library. Borrow books, learn music and art, join a health camp, or shop from local growers.
             </p>
 
-            <form action="/catalogue" role="search" className="mt-7">
+            <form action="/catalogue" role="search" className="mt-7 text-left">
               <label htmlFor="hero-q" className="sr-only">Search books by title or author</label>
-              <div className="flex items-center gap-2 rounded-full border-2 border-ink bg-card p-1.5 pl-4 shadow-lift transition-shadow focus-within:shadow-[0_0_0_4px_var(--color-kani)]">
+              <div className="flex items-center gap-2 rounded-full border-2 border-royal bg-card p-1.5 pl-4 shadow-lift transition-shadow focus-within:shadow-[0_0_0_4px_var(--color-kani)]">
                 <Search size={22} className="shrink-0 text-ink" />
                 <input
                   id="hero-q"
@@ -54,12 +50,12 @@ export default function Home() {
                   placeholder="Book or author"
                   className="h-12 min-w-0 flex-1 bg-transparent text-[17px] placeholder:text-muted focus:outline-none focus-visible:outline-none"
                 />
-                <button className="h-12 shrink-0 rounded-full bg-ink px-5 text-[16px] font-semibold text-mist transition-colors hover:bg-ink-2 sm:px-7">
+                <button className="h-12 shrink-0 rounded-full bg-royal px-5 text-[16px] font-semibold text-mist transition-colors hover:bg-royal-700 sm:px-7">
                   Search
                 </button>
               </div>
             </form>
-            <div className="mt-4 flex flex-wrap items-center gap-2">
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2 lg:justify-start">
               <span className="text-[15px] text-muted">Try</span>
               {suggestions.map((s) => (
                 <Link
@@ -74,11 +70,11 @@ export default function Home() {
           </div>
         </div>
 
-        <KeralaScape className="mt-8 h-40 w-full sm:h-56 lg:mt-4 lg:h-auto" />
+        <LotusBorder className="mt-10 lg:mt-8" />
       </section>
 
       {/* Visiting: the facts people most often need */}
-      <section className="mx-auto max-w-6xl px-5">
+      <section className="mx-auto max-w-6xl px-5 pt-10">
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="rounded-2xl bg-card p-5 shadow-lift">
             <h2 className="font-display text-lg font-bold">Opening hours</h2>
@@ -174,12 +170,12 @@ export default function Home() {
             <p className="mt-4 max-w-md text-[17px] leading-relaxed text-ink-2">
               Borrow books, reserve them from home, and get first seats in classes and camps. All you need is your mobile number.
             </p>
-            <Link href="/join" className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-[16px] font-semibold text-mist transition-colors hover:bg-ink-2">
+            <Link href="/join" className="mt-6 inline-flex items-center gap-2 rounded-full bg-royal px-6 py-3.5 text-[16px] font-semibold text-mist transition-colors hover:bg-royal-700">
               Get my card <ArrowRight size={18} />
             </Link>
           </div>
           <div className="mx-auto w-full max-w-sm">
-            <div className="relative aspect-[1.586] overflow-hidden rounded-3xl bg-ink p-6 text-mist shadow-bar">
+            <div className="relative aspect-[1.586] overflow-hidden rounded-3xl bg-royal p-6 text-mist shadow-bar">
               <span aria-hidden="true" className="absolute -top-16 -right-16 size-48 rounded-full bg-kani" />
               <span aria-hidden="true" className="absolute top-14 -right-6 size-20 rounded-full bg-teal" />
               <div className="relative flex h-full flex-col">

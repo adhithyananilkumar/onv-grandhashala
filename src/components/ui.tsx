@@ -29,7 +29,7 @@ export function PageHero({ title, ml, children }: { title: string; ml: string; c
   );
 }
 
-const COVERS = ["#1c1f4a", "#0b6e69", "#8a3219", "#2f5d3a", "#5b2a4e", "#7a5a12"];
+const COVERS = ["#1a2340", "#6e1c28", "#1f4a3d", "#4a2545", "#1d4b57", "#5e4520"];
 
 /** Generated cover: colour from a fixed set, kasavu double rule, Malayalam title. Replace with real cover photos later. */
 export function BookCover({ book, className = "", size = "md" }: { book: Book; className?: string; size?: "sm" | "md" }) {
@@ -109,7 +109,7 @@ export function ClassCard({ c }: { c: ClassItem }) {
       </dl>
       <div className="mt-auto flex items-center justify-between gap-3 pt-5">
         <span className={`text-[14px] font-medium ${few ? "text-laterite" : "text-muted"}`}>{few ? `Only ${c.seatsLeft} seats left` : `${c.seatsLeft} seats left`}</span>
-        <button className="rounded-full bg-ink px-5 py-2.5 text-[15px] font-semibold text-mist transition-colors hover:bg-ink-2">Enrol</button>
+        <button className="rounded-full bg-royal px-5 py-2.5 text-[15px] font-semibold text-mist transition-colors hover:bg-royal-700">Enrol</button>
       </div>
     </article>
   );
@@ -136,7 +136,7 @@ export function EventCard({ e, highlight }: { e: EventItem; highlight?: boolean 
           <p className="flex items-center gap-2"><Clock3 size={16} className="shrink-0" />{e.time}</p>
           <p className="flex items-center gap-2"><MapPin size={16} className="shrink-0" />{e.place}</p>
         </div>
-        <button className="mt-4 rounded-full border-2 border-ink px-5 py-2 text-[15px] font-semibold transition-colors hover:bg-ink hover:text-mist">
+        <button className="mt-4 rounded-full border-2 border-royal px-5 py-2 text-[15px] font-semibold transition-colors hover:bg-royal hover:text-mist">
           Register
         </button>
       </div>
@@ -152,7 +152,7 @@ export function ProductCard({ p, i = 0 }: { p: Product; i?: number }) {
       <div className={`relative grid aspect-[16/9] place-items-center ${TINTS[i % TINTS.length]}`}>
         <span className="px-6 text-center font-ml text-[1.7rem] leading-tight font-bold text-ink">{p.nameMl}</span>
         {p.auction && (
-          <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-ink px-3 py-1 text-[13px] font-semibold text-mist">
+          <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-royal px-3 py-1 text-[13px] font-semibold text-mist">
             <span className="size-2 animate-pulse rounded-full bg-kani" /> Live auction
           </span>
         )}
@@ -170,7 +170,7 @@ export function ProductCard({ p, i = 0 }: { p: Product; i?: number }) {
           ) : (
             <p className="font-display text-[1.75rem] leading-tight font-extrabold">₹{p.price}</p>
           )}
-          <button className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-5 py-2.5 text-[15px] font-semibold transition-colors ${p.auction ? "bg-kani text-ink hover:brightness-95" : "bg-ink text-mist hover:bg-ink-2"}`}>
+          <button className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-5 py-2.5 text-[15px] font-semibold transition-colors ${p.auction ? "bg-kani text-ink hover:brightness-95" : "bg-royal text-mist hover:bg-royal-700"}`}>
             {p.auction ? <><Gavel size={17} /> Place bid</> : "Order"}
           </button>
         </div>

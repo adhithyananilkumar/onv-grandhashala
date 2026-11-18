@@ -1,35 +1,39 @@
 @import "tailwindcss";
 
 /*
- * "Kanikonna & Monsoon" theme.
- * Monsoon-mist page, indigo-night ink, kanikonna (golden shower, Kerala's
- * state flower) yellow as the single bold colour, peacock teal for links and
- * availability, laterite only for "on loan" states and the tiled roof.
+ * Royal theme: ivory page, royal red for buttons, the dock, the footer and
+ * other solid surfaces, antique gold for highlights and line art, a warm
+ * near-black for text, royal green for "available", burnt amber for "on loan".
+ * (Token names kept from earlier themes: kani = gold, teal = green,
+ * laterite = amber.)
  */
 @theme {
-  --color-mist: #eef2ee;
-  --color-mist-2: #e1e8e2;
-  --color-card: #ffffff;
-  --color-line: #d3dcd5;
-  --color-ink: #1c1f4a;
-  --color-ink-2: #3b3f6b;
-  --color-muted: #555a78;
-  --color-teal: #0b6e69;
-  --color-teal-50: #dcefeb;
-  --color-teal-700: #08514d;
-  --color-kani: #f6c21c;
-  --color-kani-50: #fdf1c7;
-  --color-kani-700: #8a6500;
-  --color-laterite: #b5482b;
-  --color-laterite-50: #f7e1d9;
-  --color-laterite-700: #8a3219;
+  --color-mist: #f5f1e8;
+  --color-mist-2: #ebe3d4;
+  --color-card: #fffcf6;
+  --color-line: #e0d4c0;
+  --color-ink: #2a1d20;
+  --color-ink-2: #4a3a3d;
+  --color-muted: #6b5c5f;
+  --color-royal: #8b1a2b;
+  --color-royal-700: #6e1322;
+  --color-royal-50: #f6e3e5;
+  --color-teal: #1f5a4a;
+  --color-teal-50: #e1ece6;
+  --color-teal-700: #174437;
+  --color-kani: #c2a060;
+  --color-kani-50: #f3ead6;
+  --color-kani-700: #7a5c22;
+  --color-laterite: #a64614;
+  --color-laterite-50: #f7e6da;
+  --color-laterite-700: #7c3410;
 
   --font-display: var(--font-bricolage), var(--font-anek), system-ui, sans-serif;
   --font-sans: var(--font-figtree), var(--font-anek), system-ui, sans-serif;
   --font-ml: var(--font-anek), var(--font-figtree), sans-serif;
 
-  --shadow-lift: 0 1px 2px rgb(28 31 74 / 0.06), 0 8px 24px -12px rgb(28 31 74 / 0.25);
-  --shadow-bar: 0 10px 30px -14px rgb(28 31 74 / 0.35);
+  --shadow-lift: 0 1px 2px rgb(42 29 32 / 0.06), 0 8px 24px -12px rgb(42 29 32 / 0.22);
+  --shadow-bar: 0 10px 30px -14px rgb(110 19 34 / 0.4);
 }
 
 html {
@@ -59,21 +63,16 @@ body {
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
 
-/* Kanikonna garland: drops in once on load and settles. The only ambient motion. */
-.kani-raceme {
+/* Nilavilakku flames: a slow, slight flicker. The only ambient motion. */
+.lamp-flame {
   transform-box: fill-box;
-  transform-origin: 50% 0%;
-  animation: kani-drop 1.6s cubic-bezier(0.25, 1.4, 0.4, 1) both, kani-settle 3.2s ease-in-out 1.4s 1 both;
+  transform-origin: 50% 100%;
+  animation: flicker 2.6s ease-in-out infinite;
 }
-@keyframes kani-drop {
-  from { transform: scaleY(0.55); }
-  to { transform: scaleY(1); }
-}
-@keyframes kani-settle {
-  0% { transform: rotate(0deg); }
-  30% { transform: rotate(2.2deg); }
-  65% { transform: rotate(-1.4deg); }
-  100% { transform: rotate(0deg); }
+@keyframes flicker {
+  0%, 100% { transform: scale(1, 1); }
+  35% { transform: scale(0.96, 1.05); }
+  70% { transform: scale(1.03, 0.97); }
 }
 
 /* Logo loader (original artwork): the book opens out from the spine, the reader's head drops in */

@@ -84,7 +84,7 @@ export function SiteHeader() {
             href="/join"
             aria-label="Sign in or create your library card"
             title="Sign in"
-            className="group grid size-11 place-items-center rounded-full bg-ink text-mist transition-all duration-200 hover:scale-105 hover:bg-ink-2 active:scale-95"
+            className="group grid size-11 place-items-center rounded-full bg-royal text-mist transition-all duration-200 hover:scale-105 hover:bg-royal-700 active:scale-95"
           >
             <UserRound size={20} strokeWidth={2} />
           </Link>
@@ -98,7 +98,7 @@ export function BottomDock() {
   const pathname = usePathname();
   return (
     <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-50 px-3 pb-[max(10px,env(safe-area-inset-bottom))] md:hidden">
-      <ul className="mx-auto grid max-w-md grid-cols-5 gap-1 rounded-[24px] bg-ink p-1.5 shadow-bar">
+      <ul className="mx-auto grid max-w-md grid-cols-5 gap-1 rounded-[24px] bg-royal p-1.5 shadow-bar">
         {nav.map((item) => {
           const active = isActive(pathname, item.href);
           const Icon = icons[item.icon];

@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Brand & logo" };
 function Tile({ label, note, dark, file, children }: { label: string; note: string; dark?: boolean; file?: string; children: React.ReactNode }) {
   return (
     <figure className="overflow-hidden rounded-2xl border border-line bg-card shadow-lift">
-      <div className={`grid min-h-56 place-items-center p-8 ${dark ? "bg-ink" : "bg-mist-2"}`}>{children}</div>
+      <div className={`grid min-h-56 place-items-center p-8 ${dark ? "bg-royal" : "bg-mist-2"}`}>{children}</div>
       <figcaption className="flex items-start justify-between gap-3 p-4">
         <span>
           <span className="block font-semibold">{label}</span>
