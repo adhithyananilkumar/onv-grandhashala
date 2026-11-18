@@ -47,8 +47,8 @@ export function LogoLockup() {
     <span className="flex items-center gap-2.5">
       <LogoIcon className="h-9 w-auto shrink-0" priority />
       <span className="leading-tight">
-        <span className="block font-ml-serif text-[15px] font-bold text-ink">{site.nameMl}</span>
-        <span className="block text-[10.5px] font-medium tracking-[0.12em] text-muted uppercase">
+        <span className="block font-ml text-[15px] font-bold text-ink">{site.nameMl}</span>
+        <span className="block text-[10.5px] font-medium text-muted">
           <span className="hidden lg:inline">{site.nameEn} · </span>{site.placeEn}
         </span>
       </span>

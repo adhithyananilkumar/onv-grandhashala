@@ -1,24 +1,34 @@
 import type { Metadata } from "next";
-import { ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/ui";
 
-export const metadata: Metadata = { title: "Library card" };
+export const metadata: Metadata = { title: "Sign in" };
 
 export default function JoinPage() {
   return (
     <>
-      <PageHero eyebrow="Membership" title={<>Get your <em>library card</em></>} ml="അംഗത്വം · മൊബൈൽ നമ്പർ മാത്രം മതി" />
-      <div className="mx-auto max-w-md px-4">
-        <form className="rounded-[26px] border border-line bg-card/85 p-6 shadow-float backdrop-blur">
-          <label htmlFor="phone" className="font-mono text-[11px] tracking-[0.2em] text-muted uppercase">Mobile number</label>
-          <div className="mt-2 flex items-center rounded-2xl border border-line bg-paper focus-within:border-ink">
-            <span className="pl-4 font-mono text-ink-2">+91</span>
-            <input id="phone" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="98xxx xxxxx" className="h-14 min-w-0 flex-1 bg-transparent px-3 font-mono text-[16px] tracking-wider focus:outline-none" />
+      <PageHero title="Sign in" ml="മൊബൈൽ നമ്പർ ഉപയോഗിച്ച് ലോഗിൻ ചെയ്യൂ">
+        <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-ink-2">
+          New here? Signing in with your number creates your library card.
+        </p>
+      </PageHero>
+      <div className="mx-auto max-w-6xl px-5">
+        <form className="max-w-md rounded-3xl bg-card p-6 shadow-lift">
+          <label htmlFor="phone" className="text-[16px] font-semibold">Mobile number</label>
+          <div className="mt-2 flex items-center rounded-2xl border-2 border-line bg-mist transition-colors focus-within:border-ink">
+            <span className="pl-4 text-[17px] font-semibold text-ink-2">+91</span>
+            <input
+              id="phone"
+              type="tel"
+              inputMode="numeric"
+              autoComplete="tel-national"
+              placeholder="10-digit number"
+              className="h-14 min-w-0 flex-1 bg-transparent px-3 text-[18px] tracking-wide focus:outline-none focus-visible:outline-none"
+            />
           </div>
-          <button type="button" className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink py-3.5 text-paper transition hover:bg-clay">
-            Send OTP <ArrowRight size={16} />
+          <button type="button" className="mt-4 w-full rounded-full bg-ink py-3.5 text-[16px] font-semibold text-mist transition-colors hover:bg-ink-2">
+            Send code
           </button>
-          <p className="mt-4 text-center font-mono text-[10.5px] text-muted">Phone sign-in arrives in phase 2 (see PLAN.md)</p>
+          <p className="mt-3 text-[14px] text-muted">We&apos;ll send a 6-digit code by SMS. Sign-in goes live in the next phase.</p>
         </form>
       </div>
     </>

@@ -1,22 +1,23 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUp, ArrowUpRight, BookOpen, CalendarDays, Palette, ShoppingBasket, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, CalendarDays, MapPin, Palette, Phone, Search, ShoppingBasket } from "lucide-react";
 import { books, classes, events, products } from "@/lib/data";
 import { site } from "@/lib/site";
-import { InkWash, KeralaScape } from "@/components/Art";
+import { Kanikonna, KeralaScape } from "@/components/Art";
 import { LogoIcon } from "@/components/Logo";
-import { BookCard, ClassRow, EventTicket, Eyebrow, ProductCard, SectionHead } from "@/components/ui";
+import { BookCard, ClassCard, EventCard, ProductCard, SectionHead } from "@/components/ui";
 
-const doors = [
-  { href: "/catalogue", icon: BookOpen, title: "Books", ml: "പുസ്തകങ്ങൾ", text: "Search 12,000+ titles, reserve from your phone, collect at the desk." },
-  { href: "/classes", icon: Palette, title: "Classes", ml: "ക്ലാസുകൾ", text: "Music, dance, drawing, yoga, PSC coaching and computer basics." },
-  { href: "/events", icon: CalendarDays, title: "Events & camps", ml: "പരിപാടികൾ", text: "Health check-ups, holiday camps and evenings of poetry." },
-  { href: "/vipani", icon: ShoppingBasket, title: "Naattu Vipani", ml: "നാട്ടു വിപണി", text: "Buy from village farmers and makers, or bid in a live auction." },
+const sections = [
+  { href: "/catalogue", icon: BookOpen, title: "Books", ml: "പുസ്തകങ്ങൾ", text: "Search the shelves and reserve from your phone." },
+  { href: "/classes", icon: Palette, title: "Classes", ml: "ക്ലാസുകൾ", text: "Music, dance, drawing, yoga, PSC and computers." },
+  { href: "/events", icon: CalendarDays, title: "Events and camps", ml: "പരിപാടികൾ", text: "Health check-ups, holiday camps, poetry evenings." },
+  { href: "/vipani", icon: ShoppingBasket, title: "Naattu Vipani", ml: "നാട്ടു വിപണി", text: "Buy from local farmers and makers, or bid." },
 ];
 
-const chips = [
-  { label: "Malayalam novels", q: "Novel" },
+const suggestions = [
   { label: "ONV poetry", q: "onv" },
-  { label: "Children", q: "Children" },
+  { label: "Basheer", q: "basheer" },
+  { label: "Novels", q: "Novel" },
+  { label: "Children's books", q: "Children" },
   { label: "PSC", q: "PSC" },
 ];
 
@@ -24,177 +25,174 @@ export default function Home() {
   const auctions = products.filter((p) => p.auction);
   return (
     <>
-      {/* ───────── Hero ───────── */}
-      <section className="relative overflow-hidden">
-        <InkWash className="pointer-events-none absolute top-10 left-1/2 h-72 w-[min(1100px,170%)] -translate-x-1/2 opacity-55" seed={7} />
-        <div className="relative mx-auto max-w-3xl px-4 pt-12 text-center sm:pt-20">
-          <Link
-            href="/events"
-            className="inline-flex max-w-full animate-rise items-center gap-2 rounded-full border border-line bg-card/70 py-1.5 pr-3 pl-2 text-[12.5px] text-ink-2 backdrop-blur hover:border-ink/30"
-          >
-            <span className="inline-flex items-center gap-1 rounded-full bg-clay px-2 py-0.5 font-mono text-[10px] tracking-wider text-paper uppercase">
-              <Sparkles size={11} /> New
-            </span>
-            <span className="truncate">Free eye check-up camp · 29 Nov</span>
-            <ArrowRight size={13} className="shrink-0" />
-          </Link>
+      {/* Hero: the library's name under a kanikonna branch, and the search box */}
+      <section className="relative">
+        <div aria-hidden="true" className="-mt-2 h-36 overflow-hidden px-2 [mask-image:linear-gradient(black_55%,transparent)] sm:h-44 lg:hidden">
+          <Kanikonna className="mx-auto w-full max-w-xl" />
+        </div>
+        <Kanikonna className="pointer-events-none absolute top-2 right-0 hidden w-[min(540px,46%)] lg:block" />
 
-          <h1 className="mt-7 animate-rise font-ml-serif text-[2.6rem] leading-[1.18] font-bold tracking-tight [animation-delay:80ms] sm:text-[4.2rem]">
-            {site.nameMl}
-          </h1>
-          <p className="mt-3 animate-rise font-serif text-[1.65rem] leading-tight text-ink-2 [animation-delay:160ms] sm:text-4xl">
-            A village library, <em className="text-clay">open to everyone.</em>
-          </p>
+        <div className="relative mx-auto max-w-6xl px-5 lg:pt-16">
+          <div className="max-w-2xl">
+            <h1 className="font-ml text-[2.7rem] leading-[1.12] font-extrabold tracking-[-0.01em] text-ink sm:text-[4.2rem]">
+              {site.nameMl}
+            </h1>
+            <p className="mt-3 max-w-xl text-[18px] leading-relaxed text-ink-2 sm:text-xl">
+              Puthanambalam&apos;s public library. Borrow books, learn music and art, join a health camp, or shop from local growers.
+            </p>
 
-          {/* Search, the main action */}
-          <form action="/catalogue" className="mx-auto mt-9 max-w-2xl animate-rise rounded-[26px] border border-line bg-card/85 p-2 text-left shadow-float backdrop-blur-xl [animation-delay:240ms]">
-            <label htmlFor="hero-q" className="sr-only">Search the catalogue</label>
-            <input
-              id="hero-q"
-              name="q"
-              autoComplete="off"
-              placeholder="Search a book, author or subject…"
-              className="h-14 w-full bg-transparent px-4 text-[16px] placeholder:text-muted focus:outline-none"
-            />
-            <div className="flex items-center justify-between gap-2 px-2 pb-1">
-              <div className="no-scrollbar -mx-1 flex gap-1.5 overflow-x-auto px-1">
-                {chips.map((c) => (
-                  <Link key={c.q} href={`/catalogue?q=${encodeURIComponent(c.q)}`} className="shrink-0 rounded-full border border-line px-3 py-1.5 text-[12.5px] text-ink-2 transition hover:border-ink/40 hover:bg-paper">
-                    {c.label}
-                  </Link>
-                ))}
+            <form action="/catalogue" role="search" className="mt-7">
+              <label htmlFor="hero-q" className="sr-only">Search books by title or author</label>
+              <div className="flex items-center gap-2 rounded-full border-2 border-ink bg-card p-1.5 pl-4 shadow-lift transition-shadow focus-within:shadow-[0_0_0_4px_var(--color-kani)]">
+                <Search size={22} className="shrink-0 text-ink" />
+                <input
+                  id="hero-q"
+                  name="q"
+                  type="search"
+                  enterKeyHint="search"
+                  autoComplete="off"
+                  placeholder="Book or author"
+                  className="h-12 min-w-0 flex-1 bg-transparent text-[17px] placeholder:text-muted focus:outline-none focus-visible:outline-none"
+                />
+                <button className="h-12 shrink-0 rounded-full bg-ink px-5 text-[16px] font-semibold text-mist transition-colors hover:bg-ink-2 sm:px-7">
+                  Search
+                </button>
               </div>
-              <button aria-label="Search" className="grid size-10 shrink-0 place-items-center rounded-full bg-ink text-paper transition hover:bg-clay">
-                <ArrowUp size={18} />
-              </button>
+            </form>
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="text-[15px] text-muted">Try</span>
+              {suggestions.map((s) => (
+                <Link
+                  key={s.q}
+                  href={`/catalogue?q=${encodeURIComponent(s.q)}`}
+                  className="rounded-full bg-mist-2 px-3.5 py-1.5 text-[15px] font-medium text-ink transition-colors hover:bg-kani"
+                >
+                  {s.label}
+                </Link>
+              ))}
             </div>
-          </form>
-
-          <div className="mt-7 flex animate-rise flex-wrap justify-center gap-2 [animation-delay:320ms] sm:gap-2.5">
-            <Link href="/classes" className="rounded-full border border-ink/25 px-4 py-2.5 text-sm transition hover:border-ink sm:px-5">Classes</Link>
-            <Link href="/events" className="rounded-full border border-ink/25 px-4 py-2.5 text-sm transition hover:border-ink sm:px-5">Events</Link>
-            <Link href="/vipani" className="inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2.5 text-sm text-paper transition hover:bg-ink-2 sm:px-5">
-              Naattu Vipani <ArrowUpRight size={15} />
-            </Link>
           </div>
         </div>
 
-        <KeralaScape className="mt-6 h-52 w-full sm:mt-2 sm:h-auto" />
+        <KeralaScape className="mt-8 h-40 w-full sm:h-56 lg:mt-4 lg:h-auto" />
       </section>
 
-      {/* ───────── Ledger ───────── */}
-      <section className="mx-auto max-w-6xl px-4">
-        <dl className="grid grid-cols-2 border-y border-ink/80 sm:grid-cols-4">
-          {site.stats.map((s, i) => (
-            <div key={s.label} className={`px-3 py-5 ${i % 2 ? "border-l border-line" : ""} ${i > 1 ? "border-t border-line sm:border-t-0" : ""} ${i === 2 ? "sm:border-l" : ""}`}>
-              <dt className="font-mono text-[10.5px] tracking-[0.2em] text-muted uppercase">{s.label}</dt>
-              <dd className="mt-1 font-serif text-[2.6rem] leading-none tracking-tight">{s.value}</dd>
-              <dd className="mt-1 font-ml text-xs text-muted">{s.ml}</dd>
-            </div>
-          ))}
-        </dl>
+      {/* Visiting: the facts people most often need */}
+      <section className="mx-auto max-w-6xl px-5">
+        <div className="grid gap-3 sm:grid-cols-3">
+          <div className="rounded-2xl bg-card p-5 shadow-lift">
+            <h2 className="font-display text-lg font-bold">Opening hours</h2>
+            <dl className="mt-2 space-y-1 text-[15px]">
+              {site.hours.map((h) => (
+                <div key={h.days}>
+                  <dt className="font-semibold">{h.days}</dt>
+                  <dd className="text-ink-2">{h.time}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <div className="rounded-2xl bg-card p-5 shadow-lift">
+            <h2 className="font-display text-lg font-bold">Find us</h2>
+            <p className="mt-2 flex gap-2 font-ml text-[16px] text-ink-2"><MapPin size={18} className="mt-0.5 shrink-0 text-teal" />{site.addressMl}</p>
+          </div>
+          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="group flex flex-col rounded-2xl bg-kani p-5 text-ink shadow-lift transition hover:brightness-95">
+            <h2 className="font-display text-lg font-bold">Call the library</h2>
+            <p className="mt-2 flex items-center gap-2 text-[17px] font-semibold"><Phone size={18} />{site.phone}</p>
+          </a>
+        </div>
       </section>
 
-      {/* ───────── Four doors ───────── */}
-      <section className="mx-auto max-w-6xl px-4 pt-24">
-        <SectionHead index="01" eyebrow="What we do" title={<>One library, <em>four doors.</em></>} ml="ഒരു ഗ്രന്ഥശാല, നാലു വാതിലുകൾ" />
-        <div className="grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-          {doors.map((d, i) => (
-            <Link key={d.href} href={d.href} className="group relative flex flex-col bg-card p-5 transition hover:bg-paper sm:min-h-60 sm:p-6">
-              <div className="flex items-center justify-between">
-                <span className="grid size-11 place-items-center rounded-full border border-ink/15 transition group-hover:border-ink group-hover:bg-ink group-hover:text-paper">
-                  <d.icon size={19} strokeWidth={1.6} />
+      {/* What's here */}
+      <section className="mx-auto max-w-6xl px-5 pt-16 sm:pt-24">
+        <SectionHead title="What you can do here" ml="ഗ്രന്ഥശാലയിൽ എന്തെല്ലാം" />
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {sections.map((s) => (
+            <li key={s.href}>
+              <Link href={s.href} className="group flex h-full items-start gap-4 rounded-2xl bg-card p-5 shadow-lift transition-transform duration-200 active:scale-[0.98] lg:flex-col">
+                <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-kani-50 text-ink transition-colors group-hover:bg-kani">
+                  <s.icon size={23} strokeWidth={1.9} />
                 </span>
-                <span className="font-mono text-[11px] text-muted">0{i + 1}</span>
-              </div>
-              <h3 className="mt-auto pt-5 font-serif text-[2rem] leading-none sm:pt-10">{d.title}</h3>
-              <p className="mt-1 font-ml text-sm text-muted">{d.ml}</p>
-              <p className="mt-3 text-[14px] leading-relaxed text-ink-2">{d.text}</p>
-              <ArrowUpRight size={18} className="absolute right-6 bottom-6 opacity-0 transition group-hover:opacity-100" />
-            </Link>
+                <span className="min-w-0">
+                  <span className="block font-display text-[1.2rem] leading-tight font-bold">{s.title}</span>
+                  <span className="block font-ml text-[15px] text-muted">{s.ml}</span>
+                  <span className="mt-1.5 block text-[15px] leading-snug text-ink-2">{s.text}</span>
+                </span>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
-      {/* ───────── New on the shelves ───────── */}
-      <section className="pt-24">
-        <div className="mx-auto max-w-6xl px-4">
-          <SectionHead index="02" eyebrow="Catalogue" title={<>New on <em>our shelves</em></>} ml="പുതിയ പുസ്തകങ്ങൾ" href="/catalogue" cta="Browse the catalogue" />
+      {/* New books */}
+      <section className="pt-16 sm:pt-24">
+        <div className="mx-auto max-w-6xl px-5">
+          <SectionHead title="New on the shelves" ml="പുതിയ പുസ്തകങ്ങൾ" href="/catalogue" cta="All books" />
         </div>
-        <div className="no-scrollbar mx-auto flex max-w-6xl snap-x scroll-px-4 gap-4 overflow-x-auto px-4 pt-2 pb-6">
-          {books.slice(0, 8).map((b, i) => (
-            <Link key={b.id} href={`/catalogue?q=${encodeURIComponent(b.title)}`} className={`w-64 shrink-0 snap-start transition hover:-translate-y-1 ${i % 2 ? "rotate-[0.6deg]" : "-rotate-[0.6deg]"}`}>
-              <BookCard book={b} className="min-h-48" />
-            </Link>
+        <ul className="no-scrollbar mx-auto flex max-w-6xl snap-x scroll-px-5 gap-4 overflow-x-auto px-5 pb-4 sm:gap-6">
+          {books.slice(0, 8).map((b) => (
+            <li key={b.id} className="w-[148px] shrink-0 snap-start sm:w-[176px]">
+              <Link href={`/catalogue?q=${encodeURIComponent(b.title)}`} className="block transition-transform duration-200 hover:-translate-y-1">
+                <BookCard book={b} />
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
-      {/* ───────── Events ───────── */}
-      <section className="mx-auto max-w-6xl px-4 pt-20">
-        <SectionHead index="03" eyebrow="Coming up" title={<>Events <em>&amp;</em> camps</>} ml="വരാനിരിക്കുന്ന പരിപാടികൾ" href="/events" cta="All events" />
+      {/* Events */}
+      <section className="mx-auto max-w-6xl px-5 pt-14 sm:pt-20">
+        <SectionHead title="Coming up" ml="വരാനിരിക്കുന്ന പരിപാടികൾ" href="/events" cta="All events" />
         <div className="grid gap-4 lg:grid-cols-2">
-          {events.slice(0, 2).map((e) => <EventTicket key={e.id} e={e} />)}
+          {events.slice(0, 2).map((e, i) => <EventCard key={e.id} e={e} highlight={i === 0} />)}
         </div>
       </section>
 
-      {/* ───────── Classes ───────── */}
-      <section className="mx-auto max-w-6xl px-4 pt-24">
-        <SectionHead index="04" eyebrow="Learn with us" title={<>Classes for <em>every age</em></>} ml="കല, സംഗീതം, നൃത്തം, യോഗ" href="/classes" cta="All classes" />
-        <div className="border-b border-line">
-          {classes.slice(0, 4).map((c, i) => <ClassRow key={c.id} c={c} n={i + 1} />)}
+      {/* Classes */}
+      <section className="mx-auto max-w-6xl px-5 pt-16 sm:pt-24">
+        <SectionHead title="Classes this season" ml="കല, സംഗീതം, നൃത്തം, യോഗ" href="/classes" cta="All classes" />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {classes.slice(0, 3).map((c) => <ClassCard key={c.id} c={c} />)}
         </div>
       </section>
 
-      {/* ───────── Vipani ───────── */}
-      <section className="px-3 pt-24">
-        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[28px] bg-paper-2 px-4 py-12 sm:px-8">
-          <InkWash className="pointer-events-none absolute -top-10 -right-40 h-72 w-[720px] opacity-60" tone="clay" seed={11} />
-          <div className="relative">
-            <SectionHead index="05" eyebrow="ONV Naattu Vipani" title={<>Fresh from <em>our village</em></>} ml="നാട്ടിലെ ഉൽപന്നങ്ങൾ, നാട്ടുകാരിൽ നിന്ന്" href="/vipani" cta="Visit the market" />
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {auctions.map((p, i) => <ProductCard key={p.id} p={p} i={i} />)}
-            </div>
+      {/* Vipani */}
+      <section className="mt-16 bg-mist-2 py-14 sm:mt-24 sm:py-20">
+        <div className="mx-auto max-w-6xl px-5">
+          <SectionHead title="Naattu Vipani auctions" ml="നാട്ടിലെ ഉൽപന്നങ്ങൾ, നാട്ടുകാരിൽ നിന്ന്" href="/vipani" cta="Visit the market" />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {auctions.map((p, i) => <ProductCard key={p.id} p={p} i={i} />)}
           </div>
         </div>
       </section>
 
-      {/* ───────── Library card ───────── */}
-      <section className="mx-auto max-w-6xl px-4 pt-24">
+      {/* Library card */}
+      <section className="mx-auto max-w-6xl px-5 pt-16 sm:pt-24">
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <div>
-            <Eyebrow>06 · Membership</Eyebrow>
-            <h2 className="mt-3 font-serif text-5xl leading-[0.98] tracking-tight sm:text-6xl">
-              Your card to <em className="text-clay">every shelf.</em>
-            </h2>
-            <p className="mt-3 font-ml text-muted">അംഗമാകൂ, വായനയുടെ ലോകത്തേക്ക്</p>
-            <p className="mt-5 max-w-md text-[15px] leading-relaxed text-ink-2">
-              Borrow books, reserve from home, and get first seats in classes and camps. All you need is your mobile number.
+            <h2 className="font-display text-[2.2rem] leading-[1.05] font-extrabold tracking-[-0.03em] sm:text-5xl">Get a library card</h2>
+            <p className="mt-2 font-ml text-lg text-ink-2">അംഗമാകൂ, മൊബൈൽ നമ്പർ മാത്രം മതി</p>
+            <p className="mt-4 max-w-md text-[17px] leading-relaxed text-ink-2">
+              Borrow books, reserve them from home, and get first seats in classes and camps. All you need is your mobile number.
             </p>
-            <Link href="/join" className="mt-7 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm text-paper transition hover:bg-clay">
-              Get your library card <ArrowRight size={16} />
+            <Link href="/join" className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-[16px] font-semibold text-mist transition-colors hover:bg-ink-2">
+              Get my card <ArrowRight size={18} />
             </Link>
           </div>
-
-          {/* Membership card mock-up */}
-          <div className="relative mx-auto w-full max-w-md">
-            <div className="absolute inset-0 translate-x-3 translate-y-3 rotate-3 rounded-3xl bg-clay/80" />
-            <div className="relative aspect-[1.586] -rotate-2 overflow-hidden rounded-3xl bg-ink p-6 text-paper shadow-float transition duration-500 hover:rotate-0">
-              <InkWash className="absolute -right-24 -bottom-10 h-48 w-[520px] opacity-50" tone="gold" seed={2} />
+          <div className="mx-auto w-full max-w-sm">
+            <div className="relative aspect-[1.586] overflow-hidden rounded-3xl bg-ink p-6 text-mist shadow-bar">
+              <span aria-hidden="true" className="absolute -top-16 -right-16 size-48 rounded-full bg-kani" />
+              <span aria-hidden="true" className="absolute top-14 -right-6 size-20 rounded-full bg-teal" />
               <div className="relative flex h-full flex-col">
-                <div className="flex items-start justify-between">
-                  <LogoIcon white className="h-8 w-auto" />
-                  <span className="font-mono text-[10px] tracking-[0.2em] text-paper/60 uppercase">Member · അംഗം</span>
-                </div>
-                <p className="mt-auto font-ml-serif text-lg">{site.nameMl}</p>
-                <div className="mt-3 flex items-end justify-between">
+                <LogoIcon white className="h-9 w-auto self-start" />
+                <p className="mt-auto font-ml text-lg font-semibold text-white">{site.nameMl}</p>
+                <div className="mt-2 flex items-end justify-between">
                   <div>
-                    <p className="font-mono text-[10px] tracking-[0.2em] text-paper/50 uppercase">Card no.</p>
-                    <p className="font-mono text-[15px] tracking-[0.2em]">ONV · 0001 · 2026</p>
+                    <p className="text-[12px] text-mist/70">Member card</p>
+                    <p className="text-[17px] font-semibold tracking-[0.12em] text-white tabular-nums">ONV 0001 2026</p>
                   </div>
                   <div aria-hidden="true" className="flex h-9 items-end gap-[2px]">
                     {[3, 1, 2, 1, 3, 2, 1, 1, 3, 1, 2, 3, 1, 2, 1, 3].map((w, i) => (
-                      <span key={i} className="h-full bg-paper/85" style={{ width: w }} />
+                      <span key={i} className="h-full bg-mist/90" style={{ width: w }} />
                     ))}
                   </div>
                 </div>

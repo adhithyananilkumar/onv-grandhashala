@@ -22,7 +22,7 @@ export function Countdown({ to }: { to: string }) {
     return () => clearInterval(id);
   }, [to]);
   return (
-    <p className="mt-1 font-mono text-[11px] text-clay tabular-nums" suppressHydrationWarning>
+    <p className="text-[13px] font-medium text-laterite tabular-nums" suppressHydrationWarning>
       {left === null ? " " : format(left)}
     </p>
   );

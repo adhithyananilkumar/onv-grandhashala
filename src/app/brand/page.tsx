@@ -7,8 +7,8 @@ export const metadata: Metadata = { title: "Brand & logo" };
 
 function Tile({ label, note, dark, file, children }: { label: string; note: string; dark?: boolean; file?: string; children: React.ReactNode }) {
   return (
-    <figure className="overflow-hidden rounded-2xl border border-line bg-card shadow-soft">
-      <div className={`grid min-h-56 place-items-center p-8 ${dark ? "bg-ink" : "bg-paper-2"}`}>{children}</div>
+    <figure className="overflow-hidden rounded-2xl border border-line bg-card shadow-lift">
+      <div className={`grid min-h-56 place-items-center p-8 ${dark ? "bg-ink" : "bg-mist-2"}`}>{children}</div>
       <figcaption className="flex items-start justify-between gap-3 p-4">
         <span>
           <span className="block font-semibold">{label}</span>
@@ -27,7 +27,7 @@ function Tile({ label, note, dark, file, children }: { label: string; note: stri
 export default function BrandPage() {
   return (
     <>
-      <PageHero eyebrow="Identity" title="Brand & logo" ml="ഗ്രന്ഥശാലയുടെ ഔദ്യോഗിക ലോഗോ" />
+      <PageHero title="Logo and brand" ml="ഗ്രന്ഥശാലയുടെ ഔദ്യോഗിക ലോഗോ" />
       <div className="mx-auto grid max-w-6xl gap-5 px-4 pt-8 sm:grid-cols-2 lg:grid-cols-3">
         <Tile label="Full logo" note="Notices, certificates, letterheads" file="/brand/onv-logo.png">
           <LogoFull className="h-auto w-56" />
@@ -45,7 +45,7 @@ export default function BrandPage() {
           <LogoLockup />
         </Tile>
         <Tile label="App icon / favicon" note="Browser tab, home-screen shortcut" file="/icon.png">
-          <Image src="/icon.png" alt="" width={112} height={112} className="rounded-3xl shadow-soft" />
+          <Image src="/icon.png" alt="" width={112} height={112} className="rounded-3xl shadow-lift" />
         </Tile>
         <Tile label="Loader" note="Page loading and waiting states">
           <LogoLoader label="ലോഡ് ചെയ്യുന്നു…" />
