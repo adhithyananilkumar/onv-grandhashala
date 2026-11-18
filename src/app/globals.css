@@ -8,25 +8,25 @@
  * laterite = amber.)
  */
 @theme {
-  --color-mist: #f5f1e8;
-  --color-mist-2: #ebe3d4;
-  --color-card: #fffcf6;
-  --color-line: #e0d4c0;
-  --color-ink: #2a1d20;
-  --color-ink-2: #4a3a3d;
-  --color-muted: #6b5c5f;
-  --color-royal: #8b1a2b;
-  --color-royal-700: #6e1322;
-  --color-royal-50: #f6e3e5;
-  --color-teal: #1f5a4a;
-  --color-teal-50: #e1ece6;
-  --color-teal-700: #174437;
-  --color-kani: #c2a060;
-  --color-kani-50: #f3ead6;
-  --color-kani-700: #7a5c22;
-  --color-laterite: #a64614;
-  --color-laterite-50: #f7e6da;
-  --color-laterite-700: #7c3410;
+  --color-mist: #f6f1e6;
+  --color-mist-2: #ede4d3;
+  --color-card: #fffaf1;
+  --color-line: #e2d5bf;
+  --color-ink: #231b16;
+  --color-ink-2: #463a33;
+  --color-muted: #6d6058;
+  --color-royal: #9b2c1f;
+  --color-royal-700: #7a2016;
+  --color-royal-50: #f6e2db;
+  --color-teal: #2e7d4f;
+  --color-teal-50: #e0efe4;
+  --color-teal-700: #1f5c38;
+  --color-kani: #d29a2e;
+  --color-kani-50: #f7ead0;
+  --color-kani-700: #7a5410;
+  --color-laterite: #b85a14;
+  --color-laterite-50: #f8e7d6;
+  --color-laterite-700: #8a4210;
 
   --font-display: var(--font-bricolage), var(--font-anek), system-ui, sans-serif;
   --font-sans: var(--font-figtree), var(--font-anek), system-ui, sans-serif;

@@ -2,15 +2,16 @@ import Link from "next/link";
 import { ArrowRight, BookOpen, CalendarDays, MapPin, Palette, Phone, Search, ShoppingBasket } from "lucide-react";
 import { books, classes, events, products } from "@/lib/data";
 import { site } from "@/lib/site";
-import { LotusBorder, Nilavilakku } from "@/components/Art";
+import { LotusBorder } from "@/components/Art";
+import { BooksLamp, Chenda, Kathakali, PalmMarket, SnakeBoat } from "@/components/Paintings";
 import { LogoIcon } from "@/components/Logo";
 import { BookCard, ClassCard, EventCard, ProductCard, SectionHead } from "@/components/ui";
 
 const sections = [
-  { href: "/catalogue", icon: BookOpen, title: "Books", ml: "പുസ്തകങ്ങൾ", text: "Search the shelves and reserve from your phone." },
-  { href: "/classes", icon: Palette, title: "Classes", ml: "ക്ലാസുകൾ", text: "Music, dance, drawing, yoga, PSC and computers." },
-  { href: "/events", icon: CalendarDays, title: "Events and camps", ml: "പരിപാടികൾ", text: "Health check-ups, holiday camps, poetry evenings." },
-  { href: "/vipani", icon: ShoppingBasket, title: "Naattu Vipani", ml: "നാട്ടു വിപണി", text: "Buy from local farmers and makers, or bid." },
+  { href: "/catalogue", icon: BookOpen, Art: BooksLamp, cta: "Find a book", title: "Books", ml: "പുസ്തകങ്ങൾ", text: "Malayalam classics, children's books and PSC guides. Search the shelves and reserve from your phone." },
+  { href: "/classes", icon: Palette, Art: Chenda, cta: "See classes", title: "Classes", ml: "ക്ലാസുകൾ", text: "Carnatic music, Bharatanatyam, drawing, yoga, PSC coaching and computer basics, taught by people from the village." },
+  { href: "/events", icon: CalendarDays, Art: SnakeBoat, cta: "See events", title: "Events and camps", ml: "പരിപാടികൾ", text: "Eye and health check-ups, holiday camps for children, and poetry evenings in memory of ONV." },
+  { href: "/vipani", icon: ShoppingBasket, Art: PalmMarket, cta: "Visit the market", title: "Naattu Vipani", ml: "നാട്ടു വിപണി", text: "Coconut oil, banana chips, handwoven mundu and fresh produce from local growers. Order, or bid in an auction." },
 ];
 
 const suggestions = [
@@ -27,8 +28,8 @@ export default function Home() {
     <>
       {/* Hero: the library's name beside a lit nilavilakku, and the search box */}
       <section className="relative">
-        <div className="relative mx-auto grid max-w-6xl items-center gap-4 px-5 pt-2 lg:grid-cols-[1fr_300px] lg:gap-16 lg:pt-12">
-          <Nilavilakku className="mx-auto h-52 w-auto sm:h-64 lg:order-2 lg:h-[420px]" />
+        <div className="relative mx-auto grid max-w-6xl items-center gap-4 px-5 pt-2 lg:grid-cols-[1fr_400px] lg:gap-12 lg:pt-10">
+          <Kathakali className="mx-auto h-72 w-auto sm:h-80 lg:order-2 lg:h-[500px]" />
           <div className="max-w-2xl text-center lg:text-left">
             <h1 className="font-ml text-[2.7rem] leading-[1.12] font-extrabold tracking-[-0.01em] text-royal sm:text-[4.2rem]">
               {site.nameMl}
@@ -101,18 +102,27 @@ export default function Home() {
       {/* What's here */}
       <section className="mx-auto max-w-6xl px-5 pt-16 sm:pt-24">
         <SectionHead title="What you can do here" ml="ഗ്രന്ഥശാലയിൽ എന്തെല്ലാം" />
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {sections.map((s) => (
+        <ul className="space-y-4 sm:space-y-6">
+          {sections.map((s, i) => (
             <li key={s.href}>
-              <Link href={s.href} className="group flex h-full items-start gap-4 rounded-2xl bg-card p-5 shadow-lift transition-transform duration-200 active:scale-[0.98] lg:flex-col">
-                <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-kani-50 text-ink transition-colors group-hover:bg-kani">
-                  <s.icon size={23} strokeWidth={1.9} />
-                </span>
-                <span className="min-w-0">
-                  <span className="block font-display text-[1.2rem] leading-tight font-bold">{s.title}</span>
-                  <span className="block font-ml text-[15px] text-muted">{s.ml}</span>
-                  <span className="mt-1.5 block text-[15px] leading-snug text-ink-2">{s.text}</span>
-                </span>
+              <Link
+                href={s.href}
+                className="group grid overflow-hidden rounded-3xl bg-mist-2 transition-shadow duration-300 hover:shadow-lift md:grid-cols-2"
+              >
+                <div className={`relative h-52 overflow-hidden sm:h-64 md:h-80 ${i % 2 ? "md:order-2" : ""}`}>
+                  <s.Art className="h-full w-full transition-transform duration-700 group-hover:scale-[1.03]" />
+                </div>
+                <div className="flex flex-col justify-center p-6 sm:p-10">
+                  <span className="mb-4 grid size-11 place-items-center rounded-full bg-card text-royal">
+                    <s.icon size={21} strokeWidth={1.9} />
+                  </span>
+                  <h3 className="font-display text-[1.6rem] leading-tight font-bold sm:text-3xl">{s.title}</h3>
+                  <p className="font-ml text-[16px] text-muted">{s.ml}</p>
+                  <p className="mt-3 max-w-sm text-[17px] leading-relaxed text-ink-2">{s.text}</p>
+                  <span className="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-royal px-5 py-2.5 text-[15px] font-semibold text-mist transition-colors group-hover:bg-royal-700">
+                    {s.cta} <ArrowRight size={17} />
+                  </span>
+                </div>
               </Link>
             </li>
           ))}

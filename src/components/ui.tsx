@@ -29,7 +29,7 @@ export function PageHero({ title, ml, children }: { title: string; ml: string; c
   );
 }
 
-const COVERS = ["#1a2340", "#6e1c28", "#1f4a3d", "#4a2545", "#1d4b57", "#5e4520"];
+const COVERS = ["#9b2c1f", "#1f5c38", "#2f6e78", "#7a5410", "#5a2a4a", "#231b16"];
 
 /** Generated cover: colour from a fixed set, kasavu double rule, Malayalam title. Replace with real cover photos later. */
 export function BookCover({ book, className = "", size = "md" }: { book: Book; className?: string; size?: "sm" | "md" }) {
