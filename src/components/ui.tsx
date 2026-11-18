@@ -120,7 +120,7 @@ export function EventCard({ e, highlight }: { e: EventItem; highlight?: boolean 
   const fmt = (o: Intl.DateTimeFormatOptions) => d.toLocaleDateString("en-IN", { ...o, timeZone: "Asia/Kolkata" });
   return (
     <article className="flex gap-4 rounded-2xl bg-card p-4 shadow-lift sm:gap-5 sm:p-5">
-      <div className={`flex h-[84px] w-[72px] shrink-0 flex-col items-center justify-center rounded-xl ${highlight ? "bg-kani text-ink" : "bg-mist-2 text-ink"}`}>
+      <div className={`flex h-[84px] w-[72px] shrink-0 flex-col items-center justify-center rounded-xl ${highlight ? "bg-royal text-mist" : "bg-mist-2 text-ink"}`}>
         <span className="text-[13px] font-medium">{fmt({ weekday: "short" })}</span>
         <span className="font-display text-[2rem] leading-none font-extrabold">{fmt({ day: "numeric" })}</span>
         <span className="text-[13px] font-semibold">{fmt({ month: "short" })}</span>
@@ -170,7 +170,7 @@ export function ProductCard({ p, i = 0 }: { p: Product; i?: number }) {
           ) : (
             <p className="font-display text-[1.75rem] leading-tight font-extrabold">₹{p.price}</p>
           )}
-          <button className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-5 py-2.5 text-[15px] font-semibold transition-colors ${p.auction ? "bg-kani text-ink hover:brightness-95" : "bg-royal text-mist hover:bg-royal-700"}`}>
+          <button className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-5 py-2.5 text-[15px] font-semibold transition-colors ${p.auction ? "bg-royal text-mist hover:bg-royal-700" : "bg-ink text-mist hover:bg-ink-2"}`}>
             {p.auction ? <><Gavel size={17} /> Place bid</> : "Order"}
           </button>
         </div>

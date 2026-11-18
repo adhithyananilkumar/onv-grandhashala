@@ -28,12 +28,12 @@ export function CatalogueBrowser({ books }: { books: Book[] }) {
   }, [books, q, lang, cat]);
 
   const chip = (active: boolean) =>
-    `shrink-0 rounded-full px-4 py-2 text-[15px] font-medium transition-colors ${active ? "bg-royal text-mist" : "bg-card text-ink shadow-lift hover:bg-kani-50"}`;
+    `shrink-0 rounded-full px-4 py-2 text-[15px] font-medium transition-colors ${active ? "bg-royal text-mist" : "bg-card text-ink shadow-lift hover:bg-royal-50"}`;
 
   return (
     <div className="mx-auto max-w-6xl px-5">
       <div className="sticky top-[68px] z-30 -mx-5 bg-mist/95 px-5 pt-2 pb-3 backdrop-blur-md">
-        <div className="flex items-center gap-2 rounded-full border-2 border-royal bg-card py-1.5 pr-1.5 pl-4 transition-shadow focus-within:shadow-[0_0_0_4px_var(--color-kani)]">
+        <div className="flex items-center gap-2 rounded-full border-2 border-royal bg-card py-1.5 pr-1.5 pl-4 transition-shadow focus-within:shadow-[0_0_0_4px_var(--color-royal-50)]">
           <Search size={21} className="shrink-0" />
           <label htmlFor="cat-q" className="sr-only">Search by title, author or subject</label>
           <input

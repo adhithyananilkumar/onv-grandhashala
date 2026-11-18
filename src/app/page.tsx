@@ -3,7 +3,7 @@ import { ArrowRight, BookOpen, CalendarDays, MapPin, Palette, Phone, Search, Sho
 import { books, classes, events, products } from "@/lib/data";
 import { site } from "@/lib/site";
 import { LotusBorder } from "@/components/Art";
-import { BooksLamp, Chenda, Kathakali, PalmMarket, SnakeBoat } from "@/components/Paintings";
+import { BooksLamp, Chenda, HeroWashes, PalmMarket, SnakeBoat } from "@/components/Paintings";
 import { LogoIcon } from "@/components/Logo";
 import { BookCard, ClassCard, EventCard, ProductCard, SectionHead } from "@/components/ui";
 
@@ -26,21 +26,24 @@ export default function Home() {
   const auctions = products.filter((p) => p.auction);
   return (
     <>
-      {/* Hero: the library's name beside a lit nilavilakku, and the search box */}
-      <section className="relative">
-        <div className="relative mx-auto grid max-w-6xl items-center gap-4 px-5 pt-2 lg:grid-cols-[1fr_400px] lg:gap-12 lg:pt-10">
-          <Kathakali className="mx-auto h-72 w-auto sm:h-80 lg:order-2 lg:h-[500px]" />
-          <div className="max-w-2xl text-center lg:text-left">
-            <h1 className="font-ml text-[2.7rem] leading-[1.12] font-extrabold tracking-[-0.01em] text-royal sm:text-[4.2rem]">
+      {/* Hero: a framed panel, gold lotus borders gliding top and bottom, painted washes in the corners */}
+      <section className="px-3 pt-2 sm:px-5 sm:pt-4">
+        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[32px] bg-card shadow-lift">
+          <LotusBorder moving className="relative z-10" />
+          <HeroWashes className="pointer-events-none absolute inset-0 h-full w-full" />
+
+          <div className="relative mx-auto max-w-2xl px-5 py-12 text-center sm:py-20">
+            <LogoIcon className="mx-auto h-14 w-auto sm:h-16" priority />
+            <h1 className="mt-6 font-ml text-[2.6rem] leading-[1.15] font-extrabold tracking-[-0.01em] text-royal sm:text-[4rem]">
               {site.nameMl}
             </h1>
-            <p className="mx-auto mt-3 max-w-xl text-[18px] leading-relaxed text-ink-2 sm:text-xl lg:mx-0">
+            <p className="mx-auto mt-3 max-w-xl text-[18px] leading-relaxed text-ink-2 sm:text-xl">
               Puthanambalam&apos;s public library. Borrow books, learn music and art, join a health camp, or shop from local growers.
             </p>
 
-            <form action="/catalogue" role="search" className="mt-7 text-left">
+            <form action="/catalogue" role="search" className="mx-auto mt-8 max-w-xl text-left">
               <label htmlFor="hero-q" className="sr-only">Search books by title or author</label>
-              <div className="flex items-center gap-2 rounded-full border-2 border-royal bg-card p-1.5 pl-4 shadow-lift transition-shadow focus-within:shadow-[0_0_0_4px_var(--color-kani)]">
+              <div className="flex items-center gap-2 rounded-full border-2 border-royal bg-card p-1.5 pl-4 shadow-lift transition-shadow focus-within:shadow-[0_0_0_4px_var(--color-royal-50)]">
                 <Search size={22} className="shrink-0 text-ink" />
                 <input
                   id="hero-q"
@@ -56,22 +59,22 @@ export default function Home() {
                 </button>
               </div>
             </form>
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2 lg:justify-start">
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
               <span className="text-[15px] text-muted">Try</span>
               {suggestions.map((s) => (
                 <Link
                   key={s.q}
                   href={`/catalogue?q=${encodeURIComponent(s.q)}`}
-                  className="rounded-full bg-mist-2 px-3.5 py-1.5 text-[15px] font-medium text-ink transition-colors hover:bg-kani"
+                  className="rounded-full bg-mist-2 px-3.5 py-1.5 text-[15px] font-medium text-ink transition-colors hover:bg-royal hover:text-mist"
                 >
                   {s.label}
                 </Link>
               ))}
             </div>
           </div>
-        </div>
 
-        <LotusBorder className="mt-10 lg:mt-8" />
+          <LotusBorder moving reverse className="relative z-10" />
+        </div>
       </section>
 
       {/* Visiting: the facts people most often need */}
@@ -92,7 +95,7 @@ export default function Home() {
             <h2 className="font-display text-lg font-bold">Find us</h2>
             <p className="mt-2 flex gap-2 font-ml text-[16px] text-ink-2"><MapPin size={18} className="mt-0.5 shrink-0 text-teal" />{site.addressMl}</p>
           </div>
-          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="group flex flex-col rounded-2xl bg-kani p-5 text-ink shadow-lift transition hover:brightness-95">
+          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="group flex flex-col rounded-2xl bg-royal p-5 text-mist shadow-lift transition-colors hover:bg-royal-700">
             <h2 className="font-display text-lg font-bold">Call the library</h2>
             <p className="mt-2 flex items-center gap-2 text-[17px] font-semibold"><Phone size={18} />{site.phone}</p>
           </a>
@@ -110,7 +113,7 @@ export default function Home() {
                 className="group grid overflow-hidden rounded-3xl bg-mist-2 transition-shadow duration-300 hover:shadow-lift md:grid-cols-2"
               >
                 <div className={`relative h-52 overflow-hidden sm:h-64 md:h-80 ${i % 2 ? "md:order-2" : ""}`}>
-                  <s.Art className="h-full w-full transition-transform duration-700 group-hover:scale-[1.03]" />
+                  <s.Art className="art-fade h-full w-full transition-transform duration-700 group-hover:scale-[1.03]" />
                 </div>
                 <div className="flex flex-col justify-center p-6 sm:p-10">
                   <span className="mb-4 grid size-11 place-items-center rounded-full bg-card text-royal">

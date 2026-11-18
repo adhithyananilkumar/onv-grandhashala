@@ -60,7 +60,7 @@ export function SiteHeader() {
           {pill && (
             <span
               aria-hidden="true"
-              className="absolute inset-y-0 rounded-full bg-kani transition-[left,width] duration-300 ease-[cubic-bezier(0.3,1.3,0.5,1)]"
+              className="absolute inset-y-0 rounded-full bg-royal transition-[left,width] duration-300 ease-[cubic-bezier(0.3,1.3,0.5,1)]"
               style={{ left: pill.left, width: pill.width }}
             />
           )}
@@ -69,7 +69,7 @@ export function SiteHeader() {
               key={item.href}
               href={item.href}
               aria-current={isActive(pathname, item.href) ? "page" : undefined}
-              className="relative rounded-full px-4 py-2 text-[15px] font-medium text-ink-2 transition-colors hover:bg-ink/5 aria-[current=page]:text-ink aria-[current=page]:hover:bg-transparent"
+              className="relative rounded-full px-4 py-2 text-[15px] font-medium text-ink-2 transition-colors hover:bg-ink/5 aria-[current=page]:text-mist aria-[current=page]:hover:bg-transparent"
             >
               {item.label}
             </Link>
@@ -108,7 +108,7 @@ export function BottomDock() {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={`flex h-[60px] flex-col items-center justify-center gap-1 rounded-[18px] text-[11.5px] transition-colors duration-200 ${
-                  active ? "bg-kani font-semibold text-ink" : "text-mist/75 active:bg-white/10"
+                  active ? "bg-mist font-semibold text-royal" : "text-mist/75 active:bg-white/10"
                 }`}
               >
                 <Icon size={21} strokeWidth={active ? 2.2 : 1.8} />

@@ -86,12 +86,12 @@ export function Nilavilakku({ className }: { className?: string }) {
 }
 
 /** Gold lotus-and-vine border between double rules, like a kasavu or temple frieze. */
-export function LotusBorder({ className }: { className?: string }) {
+export function LotusBorder({ className, moving = false, reverse = false }: { className?: string; moving?: boolean; reverse?: boolean }) {
   const id = safe(useId());
   return (
     <svg width="100%" height="40" className={className} aria-hidden="true">
       <defs>
-        <pattern id={`p${id}`} width="72" height="40" patternUnits="userSpaceOnUse" x="50%">
+        <pattern id={`p${id}`} width="72" height="40" patternUnits="userSpaceOnUse">
           <path d="M0 20 C12 10 24 10 36 20 S60 30 72 20" fill="none" stroke={GOLD_DEEP} strokeWidth="1" />
           <g fill={GOLD} fillOpacity="0.35" stroke={GOLD_DEEP} strokeWidth="0.8">
             <path d="M36 20 C33 14 34 9 36 6 C38 9 39 14 36 20Z" />
@@ -105,7 +105,9 @@ export function LotusBorder({ className }: { className?: string }) {
       </defs>
       <rect x="0" y="0" width="100%" height="1.5" fill={GOLD_DEEP} />
       <rect x="0" y="4" width="100%" height="0.75" fill={GOLD} />
-      <rect x="0" y="6" width="100%" height="28" fill={`url(#p${id})`} />
+      <g className={moving ? (reverse ? "lotus-move-rev" : "lotus-move") : undefined}>
+        <rect x="-72" y="6" width="300%" height="28" fill={`url(#p${id})`} />
+      </g>
       <rect x="0" y="35.25" width="100%" height="0.75" fill={GOLD} />
       <rect x="0" y="38.5" width="100%" height="1.5" fill={GOLD_DEEP} />
     </svg>

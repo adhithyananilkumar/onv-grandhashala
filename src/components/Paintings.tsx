@@ -45,7 +45,29 @@ function Defs({ id }: { id: string }) {
   );
 }
 
-/* ───────────────────────── Kathakali (hero) ───────────────────────── */
+/* ───────────────────────── Hero background ───────────────────────── */
+
+/** Soft pigment washes pooled in the hero's corners; the centre stays clear for text. */
+export function HeroWashes({ className }: { className?: string }) {
+  const id = sid(useId());
+  return (
+    <svg viewBox="0 0 1200 600" preserveAspectRatio="none" className={className} aria-hidden="true">
+      <Defs id={id} />
+      <g filter={`url(#wash${id})`}>
+        <ellipse cx="60" cy="90" rx="260" ry="150" fill={P.gold} opacity="0.32" />
+        <ellipse cx="1150" cy="80" rx="200" ry="120" fill={P.red} opacity="0.16" />
+        <ellipse cx="1120" cy="540" rx="300" ry="150" fill={P.teal} opacity="0.26" />
+        <ellipse cx="90" cy="560" rx="220" ry="110" fill={P.green} opacity="0.2" />
+      </g>
+      <g filter={`url(#brush${id})`} stroke={P.ink} fill="none" strokeLinecap="round" opacity="0.35">
+        <path d="M40 520 C 140 500 230 510 320 498" strokeWidth="3" />
+        <path d="M900 100 C 980 88 1060 94 1150 84" strokeWidth="2.5" />
+      </g>
+    </svg>
+  );
+}
+
+/* ───────────────────────── Kathakali ───────────────────────── */
 
 export function Kathakali({ className }: { className?: string }) {
   const id = sid(useId());
