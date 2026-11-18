@@ -47,21 +47,39 @@ function Defs({ id }: { id: string }) {
 
 /* ───────────────────────── Hero background ───────────────────────── */
 
-/** Soft pigment washes pooled in the hero's corners; the centre stays clear for text. */
+/**
+ * Soft pigment washes that drift slowly behind the hero, plus a faint
+ * backwater horizon (palms and a vallam) along the bottom. Centre stays clear for text.
+ */
 export function HeroWashes({ className }: { className?: string }) {
   const id = sid(useId());
   return (
-    <svg viewBox="0 0 1200 600" preserveAspectRatio="none" className={className} aria-hidden="true">
+    <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" className={className} aria-hidden="true">
       <Defs id={id} />
       <g filter={`url(#wash${id})`}>
-        <ellipse cx="60" cy="90" rx="260" ry="150" fill={P.gold} opacity="0.32" />
-        <ellipse cx="1150" cy="80" rx="200" ry="120" fill={P.red} opacity="0.16" />
-        <ellipse cx="1120" cy="540" rx="300" ry="150" fill={P.teal} opacity="0.26" />
-        <ellipse cx="90" cy="560" rx="220" ry="110" fill={P.green} opacity="0.2" />
+        <g className="drift drift-a"><ellipse cx="120" cy="140" rx="300" ry="210" fill={P.gold} opacity="0.3" /></g>
+        <g className="drift drift-b"><ellipse cx="1100" cy="120" rx="260" ry="180" fill={P.red} opacity="0.14" /></g>
+        <g className="drift drift-c"><ellipse cx="1080" cy="700" rx="360" ry="220" fill={P.teal} opacity="0.24" /></g>
+        <g className="drift drift-b"><ellipse cx="140" cy="720" rx="300" ry="190" fill={P.green} opacity="0.2" /></g>
       </g>
-      <g filter={`url(#brush${id})`} stroke={P.ink} fill="none" strokeLinecap="round" opacity="0.35">
-        <path d="M40 520 C 140 500 230 510 320 498" strokeWidth="3" />
-        <path d="M900 100 C 980 88 1060 94 1150 84" strokeWidth="2.5" />
+      {/* backwater horizon */}
+      <g opacity="0.22" stroke={P.ink} fill="none" strokeLinecap="round" filter={`url(#rough${id})`}>
+        {[60, 130, 1010, 1090, 1150].map((x, i) => {
+          const tx = x + (i % 2 ? 10 : -8), ty = 600 - (i % 2 ? 90 : 130);
+          return (
+            <g key={x}>
+              <path d={`M${x} 690 Q ${x + 4} ${(690 + ty) / 2} ${tx} ${ty}`} strokeWidth="3" />
+              {[-48, -30, -10, 12, 32, 50].map((dx) => (
+                <path key={dx} d={`M${tx} ${ty} q ${dx / 2} -14 ${dx} ${10 + Math.abs(dx) / 3}`} strokeWidth="2.4" />
+              ))}
+            </g>
+          );
+        })}
+        <path d="M0 694 C 300 686 900 700 1200 690" strokeWidth="2" />
+        <g className="drift drift-boat">
+          <path d="M760 706 Q 810 716 860 704 Q 810 711 760 706Z" fill={P.ink} stroke="none" />
+          <path d="M826 706 L 836 676" strokeWidth="2" />
+        </g>
       </g>
     </svg>
   );

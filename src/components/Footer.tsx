@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { site } from "@/lib/site";
 import { LogoIcon } from "./Logo";
+import { FooterScape } from "./ArtKit";
 
 const links = [
   { href: "/catalogue", label: "Book catalogue" },
@@ -56,6 +57,7 @@ export function Footer() {
             </div>
           </div>
         </div>
+        <FooterScape className="-mt-6 h-28 w-full sm:h-40" />
         <div className="flex flex-col gap-1 border-t border-white/15 px-6 py-4 text-[13px] text-mist/65 sm:flex-row sm:justify-between sm:px-10">
           <span>Reg. No. {site.regNo}, Kerala State Library Council</span>
           <span>In memory of O. N. V. Kurup, 1931–2016</span>

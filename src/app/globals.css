@@ -65,8 +65,22 @@ body {
 .no-scrollbar { scrollbar-width: none; }
 
 /* Lotus frame around the hero: the vine glides slowly, top and bottom in opposite directions */
-.lotus-move { animation: lotus-slide 7s linear infinite; }
-.lotus-move-rev { animation: lotus-slide 7s linear infinite reverse; }
+.lotus-move { animation: lotus-slide 12s linear infinite; }
+.lotus-move-rev { animation: lotus-slide 12s linear infinite reverse; }
+
+/* Hero washes drift slowly, like pigment spreading on wet paper */
+.drift { transform-box: fill-box; transform-origin: center; }
+.drift-a { animation: drift-a 22s ease-in-out infinite alternate; }
+.drift-b { animation: drift-b 26s ease-in-out infinite alternate; }
+.drift-c { animation: drift-c 30s ease-in-out infinite alternate; }
+.drift-boat { animation: drift-boat 40s ease-in-out infinite alternate; }
+@keyframes drift-a { to { transform: translate(60px, 40px) scale(1.12); } }
+@keyframes drift-b { to { transform: translate(-50px, 30px) scale(1.08) rotate(4deg); } }
+@keyframes drift-c { to { transform: translate(-70px, -40px) scale(1.15); } }
+@keyframes drift-boat { to { transform: translateX(-260px); } }
+
+/* Rotating hero quotes cross-fade */
+.quote { transition: opacity 0.9s ease, transform 0.9s ease; }
 @keyframes lotus-slide {
   from { transform: translateX(0); }
   to { transform: translateX(72px); }
@@ -76,6 +90,11 @@ body {
 .art-fade {
   -webkit-mask-image: radial-gradient(ellipse 72% 70% at 50% 50%, #000 55%, transparent 100%);
   mask-image: radial-gradient(ellipse 72% 70% at 50% 50%, #000 55%, transparent 100%);
+}
+
+.art-fade-down {
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent 98%);
+  mask-image: linear-gradient(to bottom, #000 40%, transparent 98%);
 }
 
 /* Nilavilakku flames: a slow, slight flicker. */

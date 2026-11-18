@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowRight, BookOpen, CalendarDays, MapPin, Palette, Phone, Search, ShoppingBasket } from "lucide-react";
+import { ArrowRight, BookOpen, CalendarDays, Palette, Search, ShoppingBasket } from "lucide-react";
+import { QuoteRotator, type Quote } from "@/components/QuoteRotator";
 import { books, classes, events, products } from "@/lib/data";
 import { site } from "@/lib/site";
 import { LotusBorder } from "@/components/Art";
@@ -14,6 +15,12 @@ const sections = [
   { href: "/vipani", icon: ShoppingBasket, Art: PalmMarket, cta: "Visit the market", title: "Naattu Vipani", ml: "നാട്ടു വിപണി", text: "Coconut oil, banana chips, handwoven mundu and fresh produce from local growers. Order, or bid in an auction." },
 ];
 
+const quotes: Quote[] = [
+  { ml: "വായിച്ചു വളരുക, ചിന്തിച്ചു വിവേകം നേടുക", en: "Read and grow. Think and grow wise.", by: "P. N. Panicker, father of Kerala's library movement" },
+  { ml: "വിദ്യകൊണ്ട് പ്രബുദ്ധരാകുക", en: "Be enlightened through learning.", by: "Sree Narayana Guru" },
+  { ml: "ഓരോ ഗ്രാമത്തിലും ഒരു ഗ്രന്ഥശാല", en: "A library in every village.", by: "The idea that built Kerala's library movement" },
+];
+
 const suggestions = [
   { label: "ONV poetry", q: "onv" },
   { label: "Basheer", q: "basheer" },
@@ -26,24 +33,21 @@ export default function Home() {
   const auctions = products.filter((p) => p.auction);
   return (
     <>
-      {/* Hero: a framed panel, gold lotus borders gliding top and bottom, painted washes in the corners */}
-      <section className="px-3 pt-2 sm:px-5 sm:pt-4">
-        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[32px] bg-card shadow-lift">
+      {/* Hero: fills the first screen. Rotating lines about reading, drifting washes, gliding lotus borders. */}
+      <section className="sm:px-5 sm:pt-2">
+        <div className="relative mx-auto flex min-h-[calc(100svh-76px-92px)] max-w-6xl flex-col overflow-hidden bg-card sm:rounded-[32px] sm:shadow-lift md:min-h-[calc(100svh-104px)]">
+          <h1 className="sr-only">{site.nameMl}, {site.nameEn}, {site.placeEn}</h1>
           <LotusBorder moving className="relative z-10" />
           <HeroWashes className="pointer-events-none absolute inset-0 h-full w-full" />
 
-          <div className="relative mx-auto max-w-2xl px-5 py-12 text-center sm:py-20">
-            <LogoIcon className="mx-auto h-14 w-auto sm:h-16" priority />
-            <h1 className="mt-6 font-ml text-[2.6rem] leading-[1.15] font-extrabold tracking-[-0.01em] text-royal sm:text-[4rem]">
-              {site.nameMl}
-            </h1>
-            <p className="mx-auto mt-3 max-w-xl text-[18px] leading-relaxed text-ink-2 sm:text-xl">
-              Puthanambalam&apos;s public library. Borrow books, learn music and art, join a health camp, or shop from local growers.
-            </p>
+          <div className="relative flex flex-1 flex-col items-center justify-center px-5 py-10 text-center sm:py-14">
+            <div className="w-full max-w-3xl">
+              <QuoteRotator quotes={quotes} />
+            </div>
 
-            <form action="/catalogue" role="search" className="mx-auto mt-8 max-w-xl text-left">
+            <form action="/catalogue" role="search" className="mt-10 w-full max-w-xl text-left">
               <label htmlFor="hero-q" className="sr-only">Search books by title or author</label>
-              <div className="flex items-center gap-2 rounded-full border-2 border-royal bg-card p-1.5 pl-4 shadow-lift transition-shadow focus-within:shadow-[0_0_0_4px_var(--color-royal-50)]">
+              <div className="flex items-center gap-2 rounded-full border-2 border-royal bg-card/95 p-1.5 pl-4 shadow-lift backdrop-blur transition-shadow focus-within:shadow-[0_0_0_4px_var(--color-royal-50)]">
                 <Search size={22} className="shrink-0 text-ink" />
                 <input
                   id="hero-q"
@@ -60,12 +64,11 @@ export default function Home() {
               </div>
             </form>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              <span className="text-[15px] text-muted">Try</span>
-              {suggestions.map((s) => (
+              {suggestions.map((s, n) => (
                 <Link
                   key={s.q}
                   href={`/catalogue?q=${encodeURIComponent(s.q)}`}
-                  className="rounded-full bg-mist-2 px-3.5 py-1.5 text-[15px] font-medium text-ink transition-colors hover:bg-royal hover:text-mist"
+                  className={`rounded-full border border-line bg-card/80 px-3.5 py-1.5 text-[15px] font-medium text-ink transition-colors hover:border-royal hover:bg-royal hover:text-mist ${n > 2 ? "hidden sm:inline-block" : ""}`}
                 >
                   {s.label}
                 </Link>
@@ -76,32 +79,6 @@ export default function Home() {
           <LotusBorder moving reverse className="relative z-10" />
         </div>
       </section>
-
-      {/* Visiting: the facts people most often need */}
-      <section className="mx-auto max-w-6xl px-5 pt-10">
-        <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-2xl bg-card p-5 shadow-lift">
-            <h2 className="font-display text-lg font-bold">Opening hours</h2>
-            <dl className="mt-2 space-y-1 text-[15px]">
-              {site.hours.map((h) => (
-                <div key={h.days}>
-                  <dt className="font-semibold">{h.days}</dt>
-                  <dd className="text-ink-2">{h.time}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-          <div className="rounded-2xl bg-card p-5 shadow-lift">
-            <h2 className="font-display text-lg font-bold">Find us</h2>
-            <p className="mt-2 flex gap-2 font-ml text-[16px] text-ink-2"><MapPin size={18} className="mt-0.5 shrink-0 text-teal" />{site.addressMl}</p>
-          </div>
-          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="group flex flex-col rounded-2xl bg-royal p-5 text-mist shadow-lift transition-colors hover:bg-royal-700">
-            <h2 className="font-display text-lg font-bold">Call the library</h2>
-            <p className="mt-2 flex items-center gap-2 text-[17px] font-semibold"><Phone size={18} />{site.phone}</p>
-          </a>
-        </div>
-      </section>
-
       {/* What's here */}
       <section className="mx-auto max-w-6xl px-5 pt-16 sm:pt-24">
         <SectionHead title="What you can do here" ml="ഗ്രന്ഥശാലയിൽ എന്തെല്ലാം" />
