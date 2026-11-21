@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Signed in (set on <html> before paint from the session hint cookie): the site turns into an app. */
+@custom-variant app (&:where(html[data-auth] *));
+@custom-variant guest (&:where(html:not([data-auth]) *));
+
 /*
  * Royal theme: ivory page, royal red for buttons, the dock, the footer and
  * other solid surfaces, antique gold for highlights and line art, a warm
@@ -39,9 +43,16 @@
 
 html {
   -webkit-tap-highlight-color: transparent;
-  scroll-behavior: smooth;
   background: var(--color-mist);
+  /* Never let the page itself pan sideways on phones (fixed/absolute art can poke past the edge). */
+  overflow-x: clip;
+  overscroll-behavior-x: none;
 }
+
+/* Search mode (phones): hide the banner and site chrome so the search bar sits at the top
+   and results fill the space above the keyboard. */
+html.search-mode [data-hide-in-search] { display: none !important; }
+html.search-mode body { padding-bottom: 0; }
 
 body {
   overflow-x: clip;
@@ -55,18 +66,59 @@ body {
 
 ::selection { background: var(--color-kani); color: var(--color-ink); }
 
-:focus-visible {
-  outline: 3px solid var(--color-teal);
-  outline-offset: 2px;
-  border-radius: 12px;
+/* In a layer, so utilities like focus-visible:outline-none can override it.
+   (Unlayered, it beat every utility and drew a box inside the search pills.) */
+@layer base {
+  :focus-visible {
+    outline: 3px solid var(--color-teal);
+    outline-offset: 2px;
+  }
 }
+
+/* A search input that lives inside a styled pill: no border, outline, background or native clear button. */
+.search-bare {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+}
+.search-bare:focus, .search-bare:focus-visible { outline: none; box-shadow: none; }
+.search-bare::-webkit-search-cancel-button,
+.search-bare::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
 
-/* Lotus frame around the hero: the vine glides slowly, top and bottom in opposite directions */
-.lotus-move { animation: lotus-slide 12s linear infinite; }
-.lotus-move-rev { animation: lotus-slide 12s linear infinite reverse; }
+/* Lotus frame: the vine glides one tile at a time, so the loop is seamless at any scale.
+   Top and right run one way, bottom and left the other, so it circles the frame. */
+.lotus-move { animation: lotus-x 9s linear infinite; }
+.lotus-move-rev { animation: lotus-x 9s linear infinite reverse; }
+.lotus-move-y { animation: lotus-y 9s linear infinite; }
+.lotus-move-y-rev { animation: lotus-y 9s linear infinite reverse; }
+@keyframes lotus-x { from { transform: translateX(0); } to { transform: translateX(var(--tile, 72px)); } }
+@keyframes lotus-y { from { transform: translateY(0); } to { transform: translateY(var(--tile, 72px)); } }
+
+/* Doodles float gently, each on its own rhythm */
+.float-a { animation: float-a 9s ease-in-out infinite alternate; }
+.float-b { animation: float-b 11s ease-in-out infinite alternate; }
+.float-c { animation: float-c 13s ease-in-out infinite alternate; }
+
+/* Birds cross the empty-state sky: drift left to right (outer) while bobbing (inner). */
+.fly-across { animation: fly-across var(--dur, 16s) linear var(--delay, 0s) infinite; }
+.fly-bob { animation: fly-bob 1.8s ease-in-out infinite alternate; }
+@keyframes fly-across {
+  0% { transform: translateX(-100%); opacity: 0; }
+  8%, 88% { opacity: 1; }
+  100% { transform: translateX(var(--span, 520px)); opacity: 0; }
+}
+@keyframes fly-bob { from { transform: translateY(0) scaleY(1); } to { transform: translateY(-7px) scaleY(0.88); } }
+@keyframes float-a { from { transform: translateY(0) rotate(0); } to { transform: translateY(-8px) rotate(-1.5deg); } }
+@keyframes float-b { from { transform: translateY(-4px) rotate(1deg); } to { transform: translateY(6px) rotate(-1deg); } }
+@keyframes float-c { from { transform: translate(0, 0); } to { transform: translate(10px, -6px); } }
+.doodle { opacity: 0.8; }
+@media (max-width: 639px) { .doodle { opacity: 0.6; } }
 
 /* Hero washes drift slowly, like pigment spreading on wet paper */
 .drift { transform-box: fill-box; transform-origin: center; }
@@ -79,17 +131,13 @@ body {
 @keyframes drift-c { to { transform: translate(-70px, -40px) scale(1.15); } }
 @keyframes drift-boat { to { transform: translateX(-260px); } }
 
-/* Rotating hero quotes cross-fade */
-.quote { transition: opacity 0.9s ease, transform 0.9s ease; }
-@keyframes lotus-slide {
-  from { transform: translateX(0); }
-  to { transform: translateX(72px); }
-}
-
 /* Paintings fade into their panel instead of ending in hard edges */
 .art-fade {
-  -webkit-mask-image: radial-gradient(ellipse 72% 70% at 50% 50%, #000 55%, transparent 100%);
-  mask-image: radial-gradient(ellipse 72% 70% at 50% 50%, #000 55%, transparent 100%);
+  /* Fade every edge to nothing so the painting melts into the card instead of sitting in a frame. */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent), linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent), linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
 }
 
 .art-fade-down {
@@ -132,4 +180,45 @@ body {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* Hero portrait caption: rises in softly when the author changes. */
+@keyframes fade-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { [class*="animate-[fade-up"] { animation: none; } }
+
+/* Search modal */
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop-in { from { opacity: 0; transform: translateY(-10px) scale(0.98); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { [class*="animate-[pop-in"], [class*="animate-[fade-in"] { animation: none; } }
+
+/* Scrollbar in the site's colours: a thin peacock-green thumb on the page's cream, gold on hover. */
+html { scrollbar-width: thin; scrollbar-color: rgb(29 78 71 / 0.45) var(--color-mist); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--color-mist); }
+::-webkit-scrollbar-thumb {
+  border: 3px solid var(--color-mist);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgb(29 78 71 / 0.55), rgb(29 78 71 / 0.35));
+}
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, var(--color-kani), #b98522); }
+::-webkit-scrollbar-corner { background: var(--color-mist); }
+
+/* Chrome paints saved logins pale blue; keep our fields the colour we chose. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-card) inset;
+  -webkit-text-fill-color: var(--color-ink);
+  caret-color: var(--color-ink);
+  transition: background-color 9999s ease-out;
+}
+
+/* Visitor-only and member-only blocks, switched without a flash on load. */
+html[data-auth] .guest-only { display: none !important; }
+html:not([data-auth]) .member-only { display: none !important; }
+
+/* App feel on phones once signed in: no rubber-band page, no text selection on taps. */
+@media (max-width: 767px) {
+  html[data-auth] body { overscroll-behavior-y: none; }
+  html[data-auth] nav a, html[data-auth] nav button { -webkit-user-select: none; user-select: none; }
 }

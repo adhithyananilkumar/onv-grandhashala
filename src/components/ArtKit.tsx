@@ -199,6 +199,30 @@ export function ArtTile({ seed, motif, className }: { seed: string; motif?: Moti
   );
 }
 
+/** Wide pigment washes (no motif) for page banners, in the same style as the card art. */
+export function WashBanner({ seed, className }: { seed: string; className?: string }) {
+  const id = sid(useId());
+  const r = rng(seed);
+  const spots = [
+    { cx: 60, cy: 70 }, { cx: 1140, cy: 60 }, { cx: 120, cy: 330 }, { cx: 1080, cy: 330 }, { cx: 600, cy: 380 },
+  ].map((p, i) => ({
+    cx: p.cx + (r() - 0.5) * 160, cy: p.cy + (r() - 0.5) * 60, rx: 200 + r() * 140, ry: 110 + r() * 70,
+    fill: [C.gold, C.red, C.teal, C.green, C.goldLight][(i + Math.floor(r() * 5)) % 5], o: 0.18 + r() * 0.16,
+  }));
+  return (
+    <svg viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice" className={className} aria-hidden="true">
+      <Filters id={id} seed={Math.floor(r() * 90) + 1} />
+      <g filter={`url(#w${id})`}>
+        {spots.map((w, i) => (
+          <g key={i} className={`drift drift-${"abc"[i % 3]}`}>
+            <ellipse cx={w.cx} cy={w.cy} rx={w.rx} ry={w.ry} fill={w.fill} opacity={w.o} />
+          </g>
+        ))}
+      </g>
+    </svg>
+  );
+}
+
 const COVER_BG = ["#9b2c1f", "#1f5c38", "#2f6e78", "#7a5410", "#5a2a4a", "#1d4e47", "#231b16", "#8a4210"];
 
 /**

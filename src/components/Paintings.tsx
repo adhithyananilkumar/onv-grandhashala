@@ -48,8 +48,7 @@ function Defs({ id }: { id: string }) {
 /* ───────────────────────── Hero background ───────────────────────── */
 
 /**
- * Soft pigment washes that drift slowly behind the hero, plus a faint
- * backwater horizon (palms and a vallam) along the bottom. Centre stays clear for text.
+ * Soft pigment washes that drift slowly behind the hero. The doodles (Scene.tsx) sit on top.
  */
 export function HeroWashes({ className }: { className?: string }) {
   const id = sid(useId());
@@ -61,25 +60,6 @@ export function HeroWashes({ className }: { className?: string }) {
         <g className="drift drift-b"><ellipse cx="1100" cy="120" rx="260" ry="180" fill={P.red} opacity="0.14" /></g>
         <g className="drift drift-c"><ellipse cx="1080" cy="700" rx="360" ry="220" fill={P.teal} opacity="0.24" /></g>
         <g className="drift drift-b"><ellipse cx="140" cy="720" rx="300" ry="190" fill={P.green} opacity="0.2" /></g>
-      </g>
-      {/* backwater horizon */}
-      <g opacity="0.22" stroke={P.ink} fill="none" strokeLinecap="round" filter={`url(#rough${id})`}>
-        {[60, 130, 1010, 1090, 1150].map((x, i) => {
-          const tx = x + (i % 2 ? 10 : -8), ty = 600 - (i % 2 ? 90 : 130);
-          return (
-            <g key={x}>
-              <path d={`M${x} 690 Q ${x + 4} ${(690 + ty) / 2} ${tx} ${ty}`} strokeWidth="3" />
-              {[-48, -30, -10, 12, 32, 50].map((dx) => (
-                <path key={dx} d={`M${tx} ${ty} q ${dx / 2} -14 ${dx} ${10 + Math.abs(dx) / 3}`} strokeWidth="2.4" />
-              ))}
-            </g>
-          );
-        })}
-        <path d="M0 694 C 300 686 900 700 1200 690" strokeWidth="2" />
-        <g className="drift drift-boat">
-          <path d="M760 706 Q 810 716 860 704 Q 810 711 760 706Z" fill={P.ink} stroke="none" />
-          <path d="M826 706 L 836 676" strokeWidth="2" />
-        </g>
       </g>
     </svg>
   );

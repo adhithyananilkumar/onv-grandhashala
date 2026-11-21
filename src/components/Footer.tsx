@@ -15,7 +15,7 @@ const links = [
 
 export function Footer() {
   return (
-    <footer className="mt-24 px-3 pb-3">
+    <footer data-hide-in-search className="mt-24 px-3 pb-3">
       <div className="mx-auto max-w-6xl overflow-hidden rounded-[28px] bg-royal text-mist">
         <div className="px-6 pt-12 pb-8 sm:px-10">
           <LogoIcon white className="h-10 w-auto opacity-90" />

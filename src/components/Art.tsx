@@ -113,3 +113,95 @@ export function LotusBorder({ className, moving = false, reverse = false }: { cl
     </svg>
   );
 }
+
+/* ───────────────────────── Four-sided frame ───────────────────────── */
+
+/** One side of the frame: a gold vine between double rules. Scales with `s` (1 = 40px thick). */
+function LotusStrip({ vertical = false, reverse = false, s = 0.7 }: { vertical?: boolean; reverse?: boolean; s?: number }) {
+  const id = safe(useId());
+  const t = 40 * s;
+  const tile = 72 * s;
+  const common = { fill: "none" as const };
+  const pat = (
+    <pattern id={`p${id}`} width="72" height="40" patternUnits="userSpaceOnUse" patternTransform={vertical ? `translate(${t} 0) rotate(90) scale(${s})` : `scale(${s})`}>
+      <path d="M0 20 C12 10 24 10 36 20 S60 30 72 20" {...common} stroke={GOLD_DEEP} strokeWidth="1" />
+      <g fill={GOLD} fillOpacity="0.4" stroke={GOLD_DEEP} strokeWidth="0.8">
+        <path d="M36 20 C33 14 34 9 36 6 C38 9 39 14 36 20Z" />
+        <path d="M36 20 C31 18 28 14 28 11 C32 12 35 15 36 20Z" />
+        <path d="M36 20 C41 18 44 14 44 11 C40 12 37 15 36 20Z" />
+        <ellipse cx="14" cy="23" rx="4" ry="1.8" transform="rotate(25 14 23)" />
+        <ellipse cx="58" cy="23" rx="4" ry="1.8" transform="rotate(-25 58 23)" />
+      </g>
+      <circle cx="0" cy="20" r="1.6" fill={GOLD_DEEP} />
+    </pattern>
+  );
+  const move = vertical ? (reverse ? "lotus-move-y-rev" : "lotus-move-y") : reverse ? "lotus-move-rev" : "lotus-move";
+  const style = { ["--tile" as string]: `${tile}px` } as React.CSSProperties;
+  if (vertical) {
+    return (
+      <svg width={t} height="100%" aria-hidden="true">
+        <defs>{pat}</defs>
+        <rect x="0" y="0" width="1.5" height="100%" fill={GOLD_DEEP} />
+        <rect x="4" y="0" width="0.75" height="100%" fill={GOLD} />
+        <g className={move} style={style}>
+          <rect x={6 * s} y={-tile} width={28 * s} height="300%" fill={`url(#p${id})`} />
+        </g>
+        <rect x={t - 4.75} y="0" width="0.75" height="100%" fill={GOLD} />
+        <rect x={t - 1.5} y="0" width="1.5" height="100%" fill={GOLD_DEEP} />
+      </svg>
+    );
+  }
+  return (
+    <svg width="100%" height={t} aria-hidden="true">
+      <defs>{pat}</defs>
+      <rect x="0" y="0" width="100%" height="1.5" fill={GOLD_DEEP} />
+      <rect x="0" y="4" width="100%" height="0.75" fill={GOLD} />
+      <g className={move} style={style}>
+        <rect x={-tile} y={6 * s} width="300%" height={28 * s} fill={`url(#p${id})`} />
+      </g>
+      <rect x="0" y={t - 4.75} width="100%" height="0.75" fill={GOLD} />
+      <rect x="0" y={t - 1.5} width="100%" height="1.5" fill={GOLD_DEEP} />
+    </svg>
+  );
+}
+
+/** Corner knot: a small lotus in a ruled square that joins two strips. */
+function FrameCorner({ s, className }: { s: number; className: string }) {
+  const t = 40 * s;
+  return (
+    <svg width={t} height={t} viewBox="0 0 40 40" className={`absolute ${className}`} aria-hidden="true">
+      <rect width="40" height="40" fill="var(--color-card)" />
+      <rect x="0.75" y="0.75" width="38.5" height="38.5" fill="none" stroke={GOLD_DEEP} strokeWidth="1.5" />
+      <rect x="4" y="4" width="32" height="32" fill={GOLD} fillOpacity="0.14" stroke={GOLD} strokeWidth="0.75" />
+      <g fill={GOLD} fillOpacity="0.55" stroke={GOLD_DEEP} strokeWidth="0.8">
+        <path d="M20 29 C15 25 15 15 20 9 C25 15 25 25 20 29Z" />
+        <path d="M20 29 C13 29 8 24 8 17 C14 18 19 22 20 29Z" />
+        <path d="M20 29 C27 29 32 24 32 17 C26 18 21 22 20 29Z" />
+      </g>
+      <circle cx="20" cy="31" r="1.4" fill={GOLD_DEEP} />
+    </svg>
+  );
+}
+
+/**
+ * Overlay for a rounded container: a vine runs along all four sides (top and bottom,
+ * left and right in opposite directions) and four lotus corners tie them together.
+ * The parent must be `relative overflow-hidden`; content sits above with padding of `40 * s`.
+ */
+export function FrameOverlay({ s = 0.7, moving = true, className = "" }: { s?: number; moving?: boolean; className?: string }) {
+  const t = 40 * s;
+  const pe = "pointer-events-none absolute z-10";
+  const still = moving ? "" : "[&_*]:!animate-none";
+  return (
+    <div aria-hidden="true" className={`${still} ${className}`}>
+      <div className={`${pe} inset-x-0 top-0`}><LotusStrip s={s} /></div>
+      <div className={`${pe} inset-x-0 bottom-0`}><LotusStrip s={s} reverse /></div>
+      <div className={`${pe} left-0`} style={{ top: t, bottom: t }}><LotusStrip s={s} vertical reverse /></div>
+      <div className={`${pe} right-0`} style={{ top: t, bottom: t }}><LotusStrip s={s} vertical /></div>
+      <FrameCorner s={s} className={`${pe} top-0 left-0`} />
+      <FrameCorner s={s} className={`${pe} top-0 right-0`} />
+      <FrameCorner s={s} className={`${pe} bottom-0 left-0`} />
+      <FrameCorner s={s} className={`${pe} right-0 bottom-0`} />
+    </div>
+  );
+}

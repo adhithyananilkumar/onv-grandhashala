@@ -1,0 +1,814 @@
+{
+  "settings": {
+    "finePerDay": 1,
+    "loanDays": 14,
+    "maxRenewals": 2,
+    "upiId": "onvlibrary@upi",
+    "upiName": "ONV Grameena Grandhashala"
+  },
+  "books": [
+    {
+      "id": "b1",
+      "title": "Ujjayini",
+      "titleMl": "ഉജ്ജയിനി",
+      "author": "O. N. V. Kurup",
+      "language": "Malayalam",
+      "category": "Poetry",
+      "available": 2,
+      "copies": 3,
+      "shelf": "P-12",
+      "hue": 150
+    },
+    {
+      "id": "b2",
+      "title": "Randamoozham",
+      "titleMl": "രണ്ടാമൂഴം",
+      "author": "M. T. Vasudevan Nair",
+      "language": "Malayalam",
+      "category": "Novel",
+      "available": 0,
+      "copies": 2,
+      "shelf": "N-04",
+      "hue": 18
+    },
+    {
+      "id": "b3",
+      "title": "Khasakkinte Itihasam",
+      "titleMl": "ഖസാക്കിന്റെ ഇതിഹാസം",
+      "author": "O. V. Vijayan",
+      "language": "Malayalam",
+      "category": "Novel",
+      "available": 1,
+      "copies": 2,
+      "shelf": "N-09",
+      "hue": 40
+    },
+    {
+      "id": "b4",
+      "title": "Balyakalasakhi",
+      "titleMl": "ബാല്യകാലസഖി",
+      "author": "Vaikom Muhammad Basheer",
+      "language": "Malayalam",
+      "category": "Novel",
+      "available": 3,
+      "copies": 4,
+      "shelf": "N-01",
+      "hue": 200
+    },
+    {
+      "id": "b5",
+      "title": "Aarachar",
+      "titleMl": "ആരാച്ചാർ",
+      "author": "K. R. Meera",
+      "language": "Malayalam",
+      "category": "Novel",
+      "available": 1,
+      "copies": 1,
+      "shelf": "N-15",
+      "hue": 350
+    },
+    {
+      "id": "b6",
+      "title": "Aadujeevitham",
+      "titleMl": "ആടുജീവിതം",
+      "author": "Benyamin",
+      "language": "Malayalam",
+      "category": "Novel",
+      "available": 0,
+      "copies": 3,
+      "shelf": "N-17",
+      "hue": 30
+    },
+    {
+      "id": "b7",
+      "title": "Bhoomikkoru Charamageetham",
+      "titleMl": "ഭൂമിക്കൊരു ചരമഗീതം",
+      "author": "O. N. V. Kurup",
+      "language": "Malayalam",
+      "category": "Poetry",
+      "available": 1,
+      "copies": 1,
+      "shelf": "P-12",
+      "hue": 110
+    },
+    {
+      "id": "b8",
+      "title": "The God of Small Things",
+      "author": "Arundhati Roy",
+      "language": "English",
+      "category": "Novel",
+      "available": 2,
+      "copies": 2,
+      "shelf": "E-03",
+      "hue": 280
+    },
+    {
+      "id": "b9",
+      "title": "Wings of Fire",
+      "author": "A. P. J. Abdul Kalam",
+      "language": "English",
+      "category": "Biography",
+      "available": 1,
+      "copies": 2,
+      "shelf": "E-11",
+      "hue": 220
+    },
+    {
+      "id": "b10",
+      "title": "Panchatantra Kathakal",
+      "titleMl": "പഞ്ചതന്ത്രം കഥകൾ",
+      "author": "Retold",
+      "language": "Malayalam",
+      "category": "Children",
+      "available": 4,
+      "copies": 5,
+      "shelf": "C-02",
+      "hue": 60
+    },
+    {
+      "id": "b11",
+      "title": "Kerala PSC Rank File",
+      "author": "Talent Academy",
+      "language": "Malayalam",
+      "category": "PSC / Reference",
+      "available": 0,
+      "copies": 4,
+      "shelf": "R-01",
+      "hue": 5
+    },
+    {
+      "id": "b12",
+      "title": "Chemmeen",
+      "titleMl": "ചെമ്മീൻ",
+      "author": "Thakazhi Sivasankara Pillai",
+      "language": "Malayalam",
+      "category": "Novel",
+      "available": 2,
+      "copies": 2,
+      "shelf": "N-02",
+      "hue": 190
+    }
+  ],
+  "classes": [
+    {
+      "id": "c1",
+      "title": "Carnatic Vocal",
+      "titleMl": "കർണാടക സംഗീതം",
+      "teacher": "Smt. Lakshmi",
+      "schedule": "Sat & Sun · 4:00 PM",
+      "ages": "8+",
+      "fee": "₹300 / month",
+      "seatsLeft": 4,
+      "tone": "gold"
+    },
+    {
+      "id": "c2",
+      "title": "Drawing & Painting",
+      "titleMl": "ചിത്രരചന",
+      "teacher": "Sri. Anil Kumar",
+      "schedule": "Sunday · 10:00 AM",
+      "ages": "6 – 16",
+      "fee": "₹200 / month",
+      "seatsLeft": 9,
+      "tone": "clay"
+    },
+    {
+      "id": "c3",
+      "title": "Bharatanatyam",
+      "titleMl": "ഭരതനാട്യം",
+      "teacher": "Smt. Divya",
+      "schedule": "Wed & Sat · 5:00 PM",
+      "ages": "6+",
+      "fee": "₹400 / month",
+      "seatsLeft": 2,
+      "tone": "green"
+    },
+    {
+      "id": "c4",
+      "title": "Yoga for All",
+      "titleMl": "യോഗ",
+      "teacher": "Sri. Mohanan",
+      "schedule": "Daily · 6:00 AM",
+      "ages": "All ages",
+      "fee": "Free",
+      "seatsLeft": 15,
+      "tone": "green"
+    },
+    {
+      "id": "c5",
+      "title": "PSC Coaching",
+      "titleMl": "പി.എസ്.സി പരിശീലനം",
+      "teacher": "Volunteer team",
+      "schedule": "Sunday · 2:00 PM",
+      "ages": "18+",
+      "fee": "Free",
+      "seatsLeft": 6,
+      "tone": "gold"
+    },
+    {
+      "id": "c6",
+      "title": "Computer Basics",
+      "titleMl": "കമ്പ്യൂട്ടർ പഠനം",
+      "teacher": "Akshaya volunteers",
+      "schedule": "Tue & Thu · 6:30 PM",
+      "ages": "40+",
+      "fee": "Free",
+      "seatsLeft": 8,
+      "tone": "clay"
+    }
+  ],
+  "events": [
+    {
+      "id": "e1",
+      "title": "Free Eye Check-up Camp",
+      "titleMl": "സൗജന്യ നേത്ര പരിശോധന ക്യാമ്പ്",
+      "date": "2026-11-29",
+      "time": "9:00 AM – 1:00 PM",
+      "place": "Library Hall",
+      "kind": "Health",
+      "blurb": "Vision screening and low-cost spectacles. Register for a token slot."
+    },
+    {
+      "id": "e2",
+      "title": "Remembering ONV: Poetry Evening",
+      "titleMl": "ഒ.എൻ.വി സ്മൃതി: കാവ്യസന്ധ്യ",
+      "date": "2026-12-06",
+      "time": "5:30 PM",
+      "place": "Open-air stage",
+      "kind": "Literary",
+      "blurb": "Recitations and songs by students and local poets."
+    },
+    {
+      "id": "e3",
+      "title": "Christmas Holiday Camp for Kids",
+      "titleMl": "ക്രിസ്മസ് അവധിക്കാല ക്യാമ്പ്",
+      "date": "2026-12-22",
+      "time": "3 days · 9:30 AM",
+      "place": "Library & grounds",
+      "kind": "Camp",
+      "blurb": "Stories, crafts, theatre games and a nature walk. Ages 7–14."
+    },
+    {
+      "id": "e4",
+      "title": "Diabetes & BP Screening",
+      "titleMl": "പ്രമേഹ, രക്തസമ്മർദ്ദ പരിശോധന",
+      "date": "2027-01-10",
+      "time": "8:00 AM – 12:00 PM",
+      "place": "Library Hall",
+      "kind": "Health",
+      "blurb": "With the Primary Health Centre. Come fasting for the sugar test."
+    }
+  ],
+  "products": [
+    {
+      "id": "p1",
+      "name": "Banana chips (fresh, coconut oil)",
+      "nameMl": "ഏത്തക്കായ ഉപ്പേരി",
+      "seller": "Sreelakshmi Kudumbashree",
+      "price": 120,
+      "unit": "250 g",
+      "emoji": "🍌"
+    },
+    {
+      "id": "p2",
+      "name": "Pure coconut oil, cold pressed",
+      "nameMl": "വെളിച്ചെണ്ണ",
+      "seller": "Raghavan's Mill",
+      "price": 260,
+      "unit": "1 L",
+      "emoji": "🥥"
+    },
+    {
+      "id": "p3",
+      "name": "Handwoven kasavu mundu",
+      "nameMl": "കസവ് മുണ്ട്",
+      "seller": "Balaramapuram Weavers",
+      "price": 950,
+      "unit": "piece",
+      "emoji": "🧵",
+      "auction": {
+        "currentBid": 1150,
+        "bids": 7,
+        "endsAt": "2026-11-21T18:00:00+05:30"
+      }
+    },
+    {
+      "id": "p4",
+      "name": "Raw jackfruit (whole)",
+      "nameMl": "പച്ച ചക്ക",
+      "seller": "Thomas, Farmer",
+      "price": 80,
+      "unit": "each",
+      "emoji": "🍈",
+      "auction": {
+        "currentBid": 140,
+        "bids": 4,
+        "endsAt": "2026-11-19T20:00:00+05:30"
+      }
+    },
+    {
+      "id": "p5",
+      "name": "Organic turmeric powder",
+      "nameMl": "മഞ്ഞൾപ്പൊടി",
+      "seller": "Haritha Farm Group",
+      "price": 90,
+      "unit": "200 g",
+      "emoji": "🌿"
+    },
+    {
+      "id": "p6",
+      "name": "Clay water pot (handmade)",
+      "nameMl": "മൺകുടം",
+      "seller": "Kumaran Potteries",
+      "price": 350,
+      "unit": "piece",
+      "emoji": "🏺",
+      "auction": {
+        "currentBid": 420,
+        "bids": 3,
+        "endsAt": "2026-11-23T17:00:00+05:30"
+      }
+    }
+  ],
+  "users": [
+    {
+      "card": "ONV 0000",
+      "name": "Librarian",
+      "phone": "9400000000",
+      "since": "2019",
+      "role": "admin",
+      "joinedAt": "2019-06-19T10:00:00.000Z",
+      "ward": "Library office",
+      "salt": "d2d082c3fe407941",
+      "hash": "6cd157cd4847afebfd2a7df9759977d35cb80422569d4dd1eca5b1906e8981b7",
+      "fails": 0,
+      "lockUntil": 0
+    },
+    {
+      "card": "ONV 1111",
+      "name": "Anjali R.",
+      "phone": "9400001111",
+      "since": "2023",
+      "role": "member",
+      "joinedAt": "2023-03-02T10:00:00.000Z",
+      "ward": "Kizhakkethil, Ward 4",
+      "interests": [
+        "Books",
+        "Classes"
+      ],
+      "salt": "01ad3dbc443f2233",
+      "hash": "8f9abfb4e371ad9b1f4cd7d9958977ef9f05ad9a22ae46f83df640dd74fe2fa7",
+      "fails": 0,
+      "lockUntil": 0
+    },
+    {
+      "card": "ONV 2045",
+      "name": "Suresh Kumar",
+      "phone": "9400002045",
+      "since": "2024",
+      "role": "member",
+      "joinedAt": "2024-08-11T10:00:00.000Z",
+      "ward": "Thekkethil, Ward 2",
+      "interests": [
+        "Books",
+        "Vipani"
+      ],
+      "salt": "23ad6ec05a2d136f",
+      "hash": "800071e14765f4215c68b5be8234b48b99243c5b98eb0d0abaf831c131af0216",
+      "fails": 0,
+      "lockUntil": 0
+    }
+  ],
+  "sessions": {},
+  "loans": [
+    {
+      "id": "LN-10001",
+      "bookId": "b1",
+      "title": "Ujjayini",
+      "card": "ONV 1111",
+      "issuedAt": "2026-11-02T10:00:00.000Z",
+      "dueAt": "2026-11-16T10:00:00.000Z",
+      "renewals": 0
+    },
+    {
+      "id": "LN-10002",
+      "bookId": "b12",
+      "title": "Chemmeen",
+      "card": "ONV 1111",
+      "issuedAt": "2026-11-15T10:00:00.000Z",
+      "dueAt": "2026-11-29T10:00:00.000Z",
+      "renewals": 0
+    },
+    {
+      "id": "LN-10003",
+      "bookId": "b9",
+      "title": "Wings of Fire",
+      "card": "ONV 2045",
+      "issuedAt": "2026-11-10T10:00:00.000Z",
+      "dueAt": "2026-11-24T10:00:00.000Z",
+      "renewals": 1
+    },
+    {
+      "id": "LN-09001",
+      "bookId": "b4",
+      "title": "Balyakalasakhi",
+      "card": "ONV 1111",
+      "issuedAt": "2026-09-01T10:00:00.000Z",
+      "dueAt": "2026-09-15T10:00:00.000Z",
+      "returnedAt": "2026-09-12T10:00:00.000Z",
+      "renewals": 0
+    }
+  ],
+  "requests": [
+    {
+      "id": "RSV-48213",
+      "kind": "Reserve",
+      "card": "ONV 1111",
+      "name": "Anjali R.",
+      "itemId": "b3",
+      "title": "Khasakkinte Itihasam",
+      "detail": "Collect tomorrow",
+      "at": "2026-11-20T08:30:00.000Z",
+      "status": "pending"
+    },
+    {
+      "id": "CLS-22019",
+      "kind": "Enrol",
+      "card": "ONV 1111",
+      "name": "Anjali R.",
+      "itemId": "c1",
+      "title": "Carnatic Vocal",
+      "detail": "Sat & Sun · 4:00 PM",
+      "amount": 300,
+      "at": "2026-11-01T08:30:00.000Z",
+      "status": "confirmed"
+    },
+    {
+      "id": "EVT-31877",
+      "kind": "Register",
+      "card": "ONV 1111",
+      "name": "Anjali R.",
+      "itemId": "e1",
+      "title": "Free Eye Check-up Camp",
+      "detail": "2 people · Morning token",
+      "at": "2026-11-18T08:30:00.000Z",
+      "status": "confirmed"
+    },
+    {
+      "id": "ORD-55120",
+      "kind": "Order",
+      "card": "ONV 2045",
+      "name": "Suresh Kumar",
+      "itemId": "p2",
+      "title": "Pure coconut oil, cold pressed",
+      "detail": "2 × ₹260 · Market day (Saturday)",
+      "amount": 520,
+      "at": "2026-11-19T08:30:00.000Z",
+      "status": "pending"
+    }
+  ],
+  "payments": [
+    {
+      "id": "PAY-70001",
+      "card": "ONV 1111",
+      "name": "Anjali R.",
+      "title": "Carnatic Vocal, November fee",
+      "kind": "Class fee",
+      "amount": 300,
+      "createdAt": "2026-11-01T08:30:00.000Z",
+      "status": "due",
+      "ref": "CLS-22019"
+    },
+    {
+      "id": "PAY-70002",
+      "card": "ONV 1111",
+      "name": "Anjali R.",
+      "title": "Membership 2026",
+      "kind": "Membership",
+      "amount": 50,
+      "createdAt": "2026-01-04T08:30:00.000Z",
+      "status": "paid",
+      "method": "Cash",
+      "paidAt": "2026-01-04T08:30:00.000Z"
+    },
+    {
+      "id": "PAY-70003",
+      "card": "ONV 2045",
+      "name": "Suresh Kumar",
+      "title": "Coconut oil order",
+      "kind": "Order",
+      "amount": 520,
+      "createdAt": "2026-11-19T08:30:00.000Z",
+      "status": "verifying",
+      "method": "UPI",
+      "utr": "633412907781",
+      "ref": "ORD-55120"
+    }
+  ],
+  "notices": [
+    {
+      "id": "N-1",
+      "title": "Library closed on 1 December",
+      "body": "The reading room and desk stay closed for the Kerala Piravi programme rehearsal. Returns can go in the drop box.",
+      "at": "2026-11-19T08:00:00.000Z",
+      "tone": "alert"
+    },
+    {
+      "id": "N-2",
+      "title": "New PSC guides on shelf R-01",
+      "body": "Six new rank files and question banks for the 2027 exams are ready to borrow.",
+      "at": "2026-11-15T08:00:00.000Z",
+      "tone": "info"
+    }
+  ],
+  "comments": [
+    {
+      "id": "b1-s0",
+      "name": "Suresh Kumar",
+      "text": "A classic. Worth reading again even if you studied it in school.",
+      "rating": 5,
+      "date": "2026-11-17T00:00:00.000Z",
+      "item": "book-b1"
+    },
+    {
+      "id": "b1-s1",
+      "name": "Joseph Thomas",
+      "text": "Slow start, but the second half stays with you.",
+      "rating": 4,
+      "date": "2026-11-08T00:00:00.000Z",
+      "item": "book-b1"
+    },
+    {
+      "id": "b1-s2",
+      "name": "Rahul P.",
+      "text": "Good pick for the reading circle. We discussed it for an hour.",
+      "rating": 4,
+      "date": "2026-10-30T00:00:00.000Z",
+      "item": "book-b1"
+    },
+    {
+      "id": "b2-s0",
+      "name": "Meera Nair",
+      "text": "My daughter loved it. The copy is in good shape too.",
+      "rating": 4,
+      "date": "2026-11-16T00:00:00.000Z",
+      "item": "book-b2"
+    },
+    {
+      "id": "b2-s1",
+      "name": "Fathima S.",
+      "text": "Reserved on WhatsApp and picked it up the same day. Thank you!",
+      "rating": 5,
+      "date": "2026-11-07T00:00:00.000Z",
+      "item": "book-b2"
+    },
+    {
+      "id": "b2-s2",
+      "name": "Anjali R.",
+      "text": "Read this in two evenings. The desk kept it aside for me, very easy.",
+      "rating": 5,
+      "date": "2026-10-29T00:00:00.000Z",
+      "item": "book-b2"
+    },
+    {
+      "id": "b2-s3",
+      "name": "Meera Nair",
+      "text": "My daughter loved it. The copy is in good shape too.",
+      "rating": 4,
+      "date": "2026-10-20T00:00:00.000Z",
+      "item": "book-b2"
+    },
+    {
+      "id": "b3-s0",
+      "name": "Joseph Thomas",
+      "text": "Slow start, but the second half stays with you.",
+      "rating": 4,
+      "date": "2026-11-15T00:00:00.000Z",
+      "item": "book-b3"
+    },
+    {
+      "id": "b3-s1",
+      "name": "Rahul P.",
+      "text": "Good pick for the reading circle. We discussed it for an hour.",
+      "rating": 4,
+      "date": "2026-11-06T00:00:00.000Z",
+      "item": "book-b3"
+    },
+    {
+      "id": "b4-s0",
+      "name": "Fathima S.",
+      "text": "Reserved on WhatsApp and picked it up the same day. Thank you!",
+      "rating": 5,
+      "date": "2026-11-14T00:00:00.000Z",
+      "item": "book-b4"
+    },
+    {
+      "id": "b4-s1",
+      "name": "Anjali R.",
+      "text": "Read this in two evenings. The desk kept it aside for me, very easy.",
+      "rating": 5,
+      "date": "2026-11-05T00:00:00.000Z",
+      "item": "book-b4"
+    },
+    {
+      "id": "b4-s2",
+      "name": "Meera Nair",
+      "text": "My daughter loved it. The copy is in good shape too.",
+      "rating": 4,
+      "date": "2026-10-27T00:00:00.000Z",
+      "item": "book-b4"
+    },
+    {
+      "id": "b5-s0",
+      "name": "Rahul P.",
+      "text": "Good pick for the reading circle. We discussed it for an hour.",
+      "rating": 4,
+      "date": "2026-11-18T00:00:00.000Z",
+      "item": "book-b5"
+    },
+    {
+      "id": "b5-s1",
+      "name": "Suresh Kumar",
+      "text": "A classic. Worth reading again even if you studied it in school.",
+      "rating": 5,
+      "date": "2026-11-09T00:00:00.000Z",
+      "item": "book-b5"
+    },
+    {
+      "id": "b5-s2",
+      "name": "Joseph Thomas",
+      "text": "Slow start, but the second half stays with you.",
+      "rating": 4,
+      "date": "2026-10-31T00:00:00.000Z",
+      "item": "book-b5"
+    },
+    {
+      "id": "b5-s3",
+      "name": "Rahul P.",
+      "text": "Good pick for the reading circle. We discussed it for an hour.",
+      "rating": 4,
+      "date": "2026-10-22T00:00:00.000Z",
+      "item": "book-b5"
+    },
+    {
+      "id": "b6-s0",
+      "name": "Anjali R.",
+      "text": "Read this in two evenings. The desk kept it aside for me, very easy.",
+      "rating": 5,
+      "date": "2026-11-17T00:00:00.000Z",
+      "item": "book-b6"
+    },
+    {
+      "id": "b6-s1",
+      "name": "Meera Nair",
+      "text": "My daughter loved it. The copy is in good shape too.",
+      "rating": 4,
+      "date": "2026-11-08T00:00:00.000Z",
+      "item": "book-b6"
+    },
+    {
+      "id": "b7-s0",
+      "name": "Suresh Kumar",
+      "text": "A classic. Worth reading again even if you studied it in school.",
+      "rating": 5,
+      "date": "2026-11-16T00:00:00.000Z",
+      "item": "book-b7"
+    },
+    {
+      "id": "b7-s1",
+      "name": "Joseph Thomas",
+      "text": "Slow start, but the second half stays with you.",
+      "rating": 4,
+      "date": "2026-11-07T00:00:00.000Z",
+      "item": "book-b7"
+    },
+    {
+      "id": "b7-s2",
+      "name": "Rahul P.",
+      "text": "Good pick for the reading circle. We discussed it for an hour.",
+      "rating": 4,
+      "date": "2026-10-29T00:00:00.000Z",
+      "item": "book-b7"
+    },
+    {
+      "id": "b8-s0",
+      "name": "Meera Nair",
+      "text": "My daughter loved it. The copy is in good shape too.",
+      "rating": 4,
+      "date": "2026-11-15T00:00:00.000Z",
+      "item": "book-b8"
+    },
+    {
+      "id": "b8-s1",
+      "name": "Fathima S.",
+      "text": "Reserved on WhatsApp and picked it up the same day. Thank you!",
+      "rating": 5,
+      "date": "2026-11-06T00:00:00.000Z",
+      "item": "book-b8"
+    },
+    {
+      "id": "b8-s2",
+      "name": "Anjali R.",
+      "text": "Read this in two evenings. The desk kept it aside for me, very easy.",
+      "rating": 5,
+      "date": "2026-10-28T00:00:00.000Z",
+      "item": "book-b8"
+    },
+    {
+      "id": "b8-s3",
+      "name": "Meera Nair",
+      "text": "My daughter loved it. The copy is in good shape too.",
+      "rating": 4,
+      "date": "2026-10-19T00:00:00.000Z",
+      "item": "book-b8"
+    },
+    {
+      "id": "b9-s0",
+      "name": "Joseph Thomas",
+      "text": "Slow start, but the second half stays with you.",
+      "rating": 4,
+      "date": "2026-11-14T00:00:00.000Z",
+      "item": "book-b9"
+    },
+    {
+      "id": "b9-s1",
+      "name": "Rahul P.",
+      "text": "Good pick for the reading circle. We discussed it for an hour.",
+      "rating": 4,
+      "date": "2026-11-05T00:00:00.000Z",
+      "item": "book-b9"
+    },
+    {
+      "id": "b10-s0",
+      "name": "Fathima S.",
+      "text": "Reserved on WhatsApp and picked it up the same day. Thank you!",
+      "rating": 5,
+      "date": "2026-11-18T00:00:00.000Z",
+      "item": "book-b10"
+    },
+    {
+      "id": "b10-s1",
+      "name": "Anjali R.",
+      "text": "Read this in two evenings. The desk kept it aside for me, very easy.",
+      "rating": 5,
+      "date": "2026-11-09T00:00:00.000Z",
+      "item": "book-b10"
+    },
+    {
+      "id": "b10-s2",
+      "name": "Meera Nair",
+      "text": "My daughter loved it. The copy is in good shape too.",
+      "rating": 4,
+      "date": "2026-10-31T00:00:00.000Z",
+      "item": "book-b10"
+    },
+    {
+      "id": "b11-s0",
+      "name": "Rahul P.",
+      "text": "Good pick for the reading circle. We discussed it for an hour.",
+      "rating": 4,
+      "date": "2026-11-17T00:00:00.000Z",
+      "item": "book-b11"
+    },
+    {
+      "id": "b11-s1",
+      "name": "Suresh Kumar",
+      "text": "A classic. Worth reading again even if you studied it in school.",
+      "rating": 5,
+      "date": "2026-11-08T00:00:00.000Z",
+      "item": "book-b11"
+    },
+    {
+      "id": "b11-s2",
+      "name": "Joseph Thomas",
+      "text": "Slow start, but the second half stays with you.",
+      "rating": 4,
+      "date": "2026-10-30T00:00:00.000Z",
+      "item": "book-b11"
+    },
+    {
+      "id": "b11-s3",
+      "name": "Rahul P.",
+      "text": "Good pick for the reading circle. We discussed it for an hour.",
+      "rating": 4,
+      "date": "2026-10-21T00:00:00.000Z",
+      "item": "book-b11"
+    },
+    {
+      "id": "b12-s0",
+      "name": "Anjali R.",
+      "text": "Read this in two evenings. The desk kept it aside for me, very easy.",
+      "rating": 5,
+      "date": "2026-11-16T00:00:00.000Z",
+      "item": "book-b12"
+    },
+    {
+      "id": "b12-s1",
+      "name": "Meera Nair",
+      "text": "My daughter loved it. The copy is in good shape too.",
+      "rating": 4,
+      "date": "2026-11-07T00:00:00.000Z",
+      "item": "book-b12"
+    }
+  ]
+}

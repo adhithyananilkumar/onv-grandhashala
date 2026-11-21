@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# mock API data written at runtime (delete to reset to src/mock/db.json)
+/.mock-data/
