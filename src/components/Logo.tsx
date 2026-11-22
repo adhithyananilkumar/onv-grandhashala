@@ -68,3 +68,20 @@ export function LogoLoader({ className, label = "Loading…" }: { className?: st
     </span>
   );
 }
+
+/**
+ * The logo icon as a vector (public/brand/onv-icon.svg, traced from the original artwork by
+ * scripts/logo-svg.cjs). Drawn in `currentColor` through a CSS mask, so any text colour works.
+ */
+export function LogoMark({ className = "", label }: { className?: string; label?: string }) {
+  const mask = "url(/brand/onv-icon.svg) center / contain no-repeat";
+  return (
+    <span
+      role={label ? "img" : undefined}
+      aria-label={label}
+      aria-hidden={label ? undefined : true}
+      className={`inline-block bg-current ${className}`}
+      style={{ aspectRatio: `${ICON_W} / ${ICON_H}`, mask, WebkitMask: mask }}
+    />
+  );
+}

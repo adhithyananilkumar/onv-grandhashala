@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 import { ChromeGate } from "@/components/ChromeGate";
 import { ScrollTop } from "@/components/ScrollTop";
 import { LoginHost } from "@/components/LoginSheet";
+import { PwaHost } from "@/components/Pwa";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -21,6 +22,10 @@ export const metadata: Metadata = {
   },
   description:
     "Public library in Puthanambalam, Kerala. Search and reserve books, join arts and music classes, register for health camps and events, and shop local at ONV Naattu Vipani.",
+  applicationName: "ONV Library",
+  // Installed on iPhone: full-screen app with its own name under the icon.
+  appleWebApp: { capable: true, title: "ONV Library", statusBarStyle: "default" },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {
@@ -50,6 +55,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Suspense><ChromeGate><div className="app:hidden"><Footer /></div></ChromeGate></Suspense>
         <Suspense><ChromeGate><BottomDock /></ChromeGate></Suspense>
         <Suspense><LoginHost /></Suspense>
+        <Suspense><PwaHost /></Suspense>
       </body>
     </html>
   );

@@ -22,7 +22,13 @@ export function useSession() {
   return { user, ready: !loading, isAdmin: user?.role === "admin" };
 }
 
+/** Tell the service worker to forget saved pages and data, so nothing carries over between people. */
+function clearUserCaches() {
+  try { navigator.serviceWorker?.controller?.postMessage("clear-user-caches"); } catch { /* no worker */ }
+}
+
 function signedIn(user: User) {
+  clearUserCaches();
   setCache(ME, { user });
   setAuthAttr(user);
   invalidate("/api/me", "/api/admin");
@@ -48,6 +54,7 @@ export async function resetPin(phone: string, otp: string, pin: string) {
 
 export async function logout() {
   await api("/api/auth/logout", { body: {} }).catch(() => undefined);
+  clearUserCaches();
   setCache(ME, { user: null });
   setAuthAttr(null);
   invalidate("/api/me", "/api/admin");
