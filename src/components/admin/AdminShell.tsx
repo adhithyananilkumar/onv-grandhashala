@@ -10,7 +10,6 @@ import { initials, logout, useSession } from "@/lib/session";
 import { site } from "@/lib/site";
 import type { AdminOverview } from "@/lib/types";
 import { Sheet, Skeleton } from "../forms";
-import { LoginForm } from "../LoginSheet";
 import { LogoIcon } from "../Logo";
 import { GROUPS, SECTIONS, sectionPath, type Pending, type SectionKey } from "./sections";
 
@@ -91,6 +90,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   }, [router, data, setSheet]);
   const clear = useCallback(() => setPending(null), []);
 
+  // Signed out: the shared sign-in page, which returns here (same section) once signed in.
+  useEffect(() => {
+    if (ready && !user) router.replace(`/join?next=${encodeURIComponent(path)}`);
+  }, [ready, user, path, router]);
+
   // Keep the console fresh while it's open; much faster during a live auction.
   useEffect(() => {
     if (!isAdmin) return;
@@ -111,17 +115,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const frame = (inner: React.ReactNode) => <div className="fixed inset-0 z-[60] overflow-y-auto bg-mist">{inner}</div>;
 
   if (!ready) return frame(<div className="mx-auto max-w-3xl space-y-3 px-4 pt-6"><Skeleton className="h-12" /><Skeleton className="h-40" /></div>);
-  if (!user) {
-    return frame(
-      <div className="mx-auto max-w-md px-4 pt-12 pb-16">
-        <LogoIcon className="h-12 w-auto" />
-        <h1 className="mt-4 font-display text-3xl font-extrabold tracking-tight">Library staff</h1>
-        <p className="mt-1 text-muted">Sign in with a staff library card.</p>
-        <div className="mt-6 rounded-[28px] bg-card p-5 ring-1 ring-line/70"><LoginForm /></div>
-        <Link href="/" className="mt-5 inline-flex items-center gap-2 text-[15px] font-semibold text-royal"><ArrowLeft size={16} /> Back to the library site</Link>
-      </div>,
-    );
-  }
+  // Signed out: use the library's own sign-in page (staff wording), then come straight back here.
+  if (!user) return frame(<div className="grid min-h-svh place-items-center"><span className="size-8 animate-spin rounded-full border-4 border-royal/20 border-t-royal" aria-label="Loading" /></div>);
   if (!isAdmin) {
     return frame(
       <div className="mx-auto grid max-w-md place-items-center px-5 py-24 text-center">

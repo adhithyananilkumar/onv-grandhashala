@@ -147,9 +147,12 @@ export function JoinFlow() {
 
   if (!ready || member) return <div className="grid min-h-svh place-items-center"><span className="size-8 animate-spin rounded-full border-4 border-royal/20 border-t-royal" aria-label="Loading" /></div>;
 
+  // Sent here by the staff console: same page, staff wording, and no "create a card" tab.
+  const staff = !!next?.startsWith("/admin") && mode === "signin";
   const register = mode === "register";
   const forgot = mode === "forgot";
-  const heading = forgot ? ["Forgot your PIN or ID?", "പിൻ / ഐഡി മറന്നോ?", forgotWhat === "PIN" ? "Enter your ID and phone number. We'll send a code." : "Enter your phone number. We'll find your ID."]
+  const heading = staff ? ["Library staff", "ലൈബ്രറി ജീവനക്കാർ", "Sign in with your staff library ID and PIN."]
+    : forgot ? ["Forgot your PIN or ID?", "പിൻ / ഐഡി മറന്നോ?", forgotWhat === "PIN" ? "Enter your ID and phone number. We'll send a code." : "Enter your phone number. We'll find your ID."]
     : register ? ["Create your library card", "ലൈബ്രറി കാർഡ് എടുക്കാം", "Free for everyone in the village."]
     : ["Welcome back", "സ്വാഗതം", "Your library number and PIN, please."];
   const link = "font-semibold text-teal underline decoration-teal/30 underline-offset-4 hover:decoration-teal";
@@ -165,7 +168,7 @@ export function JoinFlow() {
           <p className="mt-2 font-ml text-[1.15rem] text-ink-2">{heading[1]}</p>
           <p className="mx-auto mt-3 max-w-xs text-[14.5px] leading-snug text-muted">{heading[2]}</p>
         </div>
-        {step === "form" && !forgot && (
+        {step === "form" && !forgot && !staff && (
           <div role="tablist" aria-label="Sign in or create a card" className="mx-auto mb-7 grid max-w-xs grid-cols-2 rounded-full bg-card p-1 [filter:var(--field-filter)]">
             {([["signin", "Sign in"], ["register", "Create card"]] as const).map(([m, l]) => (
               <button key={m} type="button" role="tab" aria-selected={mode === m} onClick={() => mode !== m && switchMode(m)}
