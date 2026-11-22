@@ -7,6 +7,7 @@ import { BookOpen, CalendarDays, House, Menu, Palette, ShoppingBasket, UserRound
 import { nav, site } from "@/lib/site";
 import { SearchButton } from "./SearchModal";
 import { initials, useSession } from "@/lib/session";
+import { prefetchApi } from "@/lib/api";
 import { AppDrawer } from "./AppDrawer";
 import { LogoIcon } from "./Logo";
 
@@ -53,10 +54,12 @@ export function SiteHeader() {
   }, [pathname]);
 
   return (
-    <header data-hide-in-search className={`sticky top-0 z-50 px-3 app:md:hidden transition-[padding] duration-300 sm:px-5 ${scrolled ? "pt-2" : "pt-3 sm:pt-4"}`}>
+    // Fixed size: changing the header's height on scroll shifted the whole page by a few pixels
+    // (a visible jerk on phones). Scrolling now only deepens the shadow, which costs no layout.
+    <header data-hide-in-search className="sticky top-0 z-50 px-3 pt-3 app:md:hidden sm:px-5 sm:pt-4">
       <div
-        className={`mx-auto flex max-w-6xl items-center justify-between gap-4 rounded-full border border-white/70 bg-card/80 pr-2 pl-5 shadow-[0_10px_40px_-14px_rgb(35_27_22/0.28)] backdrop-blur-xl transition-all duration-300 sm:pl-6 ${
-          scrolled ? "h-14" : "h-16"
+        className={`mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 rounded-full border border-white/70 bg-card/90 pr-2 pl-5 backdrop-blur-md transition-shadow duration-300 sm:pl-6 ${
+          scrolled ? "shadow-[0_12px_40px_-12px_rgb(35_27_22/0.36)]" : "shadow-[0_10px_40px_-14px_rgb(35_27_22/0.24)]"
         }`}
       >
         <Link href="/" aria-label={`${site.nameEn}, home`} className="flex min-w-0 items-center gap-3">
@@ -117,16 +120,30 @@ export function SiteHeader() {
 
 export function BottomDock() {
   const pathname = usePathname();
+  // The tab you tap lights up at once, before the next page has arrived; the real path takes over after.
+  // It only counts while we are still on the page it was tapped from.
+  const [tap, setTap] = useState<{ href: string; from: string } | null>(null);
+  const tapped = tap && tap.from === pathname ? tap.href : null;
+
+  // Every listing screen reads the same public catalogue. Fetch it while the phone is idle so
+  // tapping Books, Classes, Events or Vipani shows content straight away instead of skeletons.
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((f: () => void) => setTimeout(f, 800));
+    const h = idle(() => prefetchApi("/api/catalog"));
+    return () => (window.cancelIdleCallback ?? clearTimeout)(h as number);
+  }, []);
+
   return (
     <nav data-hide-in-search aria-label="Main" className="fixed inset-x-0 bottom-0 z-50 px-3 pb-[max(10px,env(safe-area-inset-bottom))] md:hidden">
       <ul className="mx-auto grid max-w-md grid-cols-5 gap-1 rounded-[24px] bg-royal p-1.5 shadow-bar">
         {nav.map((item) => {
-          const active = isActive(pathname, item.href);
+          const active = tapped ? tapped === item.href : isActive(pathname, item.href);
           const Icon = icons[item.icon];
           return (
             <li key={item.href}>
               <Link
                 href={item.href}
+                onClick={() => { if (pathname !== item.href) setTap({ href: item.href, from: pathname }); }}
                 aria-current={active ? "page" : undefined}
                 className={`group flex h-[60px] flex-col items-center justify-center gap-1 rounded-[18px] text-[11.5px] transition-colors duration-200 ${
                   active ? "bg-mist font-semibold text-royal" : "text-mist/75 active:bg-white/10"

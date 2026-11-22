@@ -19,11 +19,11 @@ function HeroAccent() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -top-28 bottom-0 -z-10 overflow-hidden [mask-image:linear-gradient(to_bottom,#000_75%,transparent)]">
       {/* Washes: warm gold behind the words, cool peacock green behind the portrait. */}
-      <div className="absolute -top-[10%] -left-[10%] h-[70%] w-[60%] rounded-full bg-[radial-gradient(closest-side,rgb(210_154_46/0.13),transparent)] blur-2xl" />
-      <div className="absolute right-[-12%] bottom-[-15%] h-[80%] w-[60%] rounded-full bg-[radial-gradient(closest-side,rgb(29_78_71/0.08),transparent)] blur-2xl" />
+      <div className="absolute -top-[10%] -left-[10%] h-[70%] w-[60%] rounded-full bg-[radial-gradient(closest-side,rgb(210_154_46/0.13),transparent)]" />
+      <div className="absolute right-[-12%] bottom-[-15%] h-[80%] w-[60%] rounded-full bg-[radial-gradient(closest-side,rgb(29_78_71/0.08),transparent)]" />
 
       {/* Paper grain. */}
-      <svg className="absolute inset-0 h-full w-full opacity-[0.05] mix-blend-multiply">
+      <svg className="absolute inset-0 h-full w-full opacity-[0.04]">
         <filter id="hero-grain">
           <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
           <feColorMatrix values="0 0 0 0 0.14  0 0 0 0 0.11  0 0 0 0 0.09  0 0 0 1 0" />

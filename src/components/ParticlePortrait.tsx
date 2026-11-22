@@ -5,13 +5,18 @@ import { useEffect, useRef } from "react";
 // Page tokens: royal-700 for shadows, a muted kani gold for mid tones.
 const INK = [20, 58, 53] as const;
 const TINT = [168, 120, 40] as const;
-const MORPH_MS = 3000;
+/** One author to the next. */
+const MORPH_MS = 2600;
+/** The very first portrait gathers out of the dust quickly, so the hero is never empty for long. */
+const FIRST_MS = 1300;
 
 type Crop = [number, number, number, number];
 type Props = {
   src: string;
   alt: string;
   crop?: Crop;
+  /** The portrait that comes after this one: sampled ahead of time while the page is idle. */
+  next?: { src: string; crop?: Crop };
   className?: string;
 };
 
@@ -19,21 +24,24 @@ const images = new Map<string, Promise<HTMLImageElement>>();
 function loadImage(src: string) {
   let p = images.get(src);
   if (!p) {
-    p = new Promise((res, rej) => {
+    p = new Promise<HTMLImageElement>((res, rej) => {
       const img = new Image();
+      img.decoding = "async";
       img.onload = () => res(img);
       img.onerror = rej;
       img.src = src;
-    });
+    }).then((img) => img.decode().then(() => img, () => img));
     images.set(src, p);
   }
   return p;
 }
 
-/** Start loading (and decoding) images ahead of time so a later change is instant. */
+/** Load images one after another (never all at once) so a later change is instant. */
 export function preloadImages(srcs: string[]) {
-  for (const s of srcs) loadImage(s).catch(() => {});
+  srcs.reduce<Promise<unknown>>((chain, s) => chain.then(() => loadImage(s)).catch(() => {}), Promise.resolve());
 }
+
+const idle = (f: () => void) => (typeof requestIdleCallback === "function" ? requestIdleCallback(f, { timeout: 2500 }) : setTimeout(f, 300));
 
 // Sampling is the slow part of a change, so keep results per image and box size.
 const samples = new Map<string, Float32Array>();
@@ -112,14 +120,14 @@ function sample(img: HTMLImageElement, crop: Crop, W: number, H: number, N: numb
 
 /**
  * Draws a portrait as fine particles in the page's ink, gently swaying in 3D.
- * When `src` changes, the same particles drift slowly along curved paths into
- * the new face. Pixels go straight into an ImageData buffer, so tens of
- * thousands of particles stay smooth. No dependencies.
+ * When `src` changes, the same particles glide along soft curves into the new
+ * face. Pixels go straight into an ImageData buffer and the frame loop allocates
+ * nothing, so tens of thousands of particles stay smooth on phones. No dependencies.
  */
-export function ParticlePortrait({ src, alt, crop, className = "" }: Props) {
+export function ParticlePortrait({ src, alt, crop, next, className = "" }: Props) {
   const wrap = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
-  const engine = useRef<{ show: (src: string, crop: Crop) => void } | null>(null);
+  const engine = useRef<{ show: (src: string, crop: Crop) => void; prepare: (src: string, crop: Crop) => void } | null>(null);
 
   useEffect(() => {
     const el = wrap.current!;
@@ -129,17 +137,12 @@ export function ParticlePortrait({ src, alt, crop, className = "" }: Props) {
 
     let N = 0, W = 0, H = 0, dpr = 1, size = 1, raf = 0, visible = true, dead = false;
     let px = new Float32Array(0), py = px, sx = px, sy = px, hx = px, hy = px, hz = px;
-    let lumA = px, lumB = px, fadeA = px, fadeB = px, delay = px, swirl = px, reach = px, depth = px;
-    let ctlX = px, ctlY = px, spin = px;
-    // Transition motion: 0 vortex, 1 burst, 2 wind, 3 streams.
-    const STYLES = 4;
-    let style = Math.floor(Math.random() * STYLES), vcx = 0, vcy = 0, squash = 0.75;
-    const col = { v: new Uint32Array(0) };
+    let lumA = px, lumB = px, fadeA = px, fadeB = px, delay = px, ctlX = px, ctlY = px;
+    let col = new Uint32Array(0);
     let buf: ImageData | null = null, u32 = new Uint32Array(0);
-    let morphAt = -1e9, morphing = false;
+    let morphAt = -1e9, morphing = false, dur = MORPH_MS, shown = false;
     let want: { src: string; crop: Crop } | null = null;
     let token = 0;
-    const tilt = { x: 0, y: 0 };
 
     const colour = (lum: number, fade: number) => {
       const t = Math.min(1, lum / 0.75);
@@ -151,9 +154,8 @@ export function ParticlePortrait({ src, alt, crop, className = "" }: Props) {
     function alloc(n: number) {
       const f = () => new Float32Array(n);
       px = f(); py = f(); sx = f(); sy = f(); hx = f(); hy = f(); hz = f();
-      lumA = f(); lumB = f(); fadeA = f(); fadeB = f(); delay = f(); swirl = f(); reach = f(); depth = f();
-      ctlX = f(); ctlY = f(); spin = f();
-      col.v = new Uint32Array(n);
+      lumA = f(); lumB = f(); fadeA = f(); fadeB = f(); delay = f(); ctlX = f(); ctlY = f();
+      col = new Uint32Array(n);
       for (let p = 0; p < n; p++) {
         // Start as loose, invisible dust spread over the box.
         px[p] = Math.random() * W; py[p] = Math.random() * H;
@@ -165,40 +167,52 @@ export function ParticlePortrait({ src, alt, crop, className = "" }: Props) {
       const rect = el.getBoundingClientRect();
       if (!rect.width || !rect.height) return false;
       const changed = Math.abs(rect.width - W) > 1 || Math.abs(rect.height - H) > 1;
+      if (!changed && buf) return false;
       W = rect.width; H = rect.height;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
       buf = ctx.createImageData(cv.width, cv.height);
       u32 = new Uint32Array(buf.data.buffer);
       size = Math.max(1, Math.round(dpr * 1.05));
-      const n = Math.min(70000, Math.round(W * H * 0.16));
+      // Phones have a smaller box and a slower CPU: fewer, slightly bolder dots read the same.
+      const n = Math.min(W < 640 ? 30000 : 70000, Math.round(W * H * 0.16));
       if (n !== N) { N = n; alloc(N); }
-      return changed;
+      return true;
     }
 
-    async function show(next: string, c: Crop) {
-      want = { src: next, crop: c };
+    const keyOf = (s: string, c: Crop) => `${s}|${c.join(",")}|${W | 0}x${H | 0}|${N}`;
+    function sampled(img: HTMLImageElement, s: string, c: Crop) {
+      const k = keyOf(s, c);
+      let v = samples.get(k);
+      if (!v) { v = sample(img, c, W, H, N); samples.set(k, v); }
+      return v;
+    }
+
+    /** Sample the next portrait while the browser is idle, so the change itself costs nothing. */
+    function prepare(s: string, c: Crop) {
+      loadImage(s).then((img) => idle(() => { if (!dead && W) sampled(img, s, c); })).catch(() => {});
+    }
+
+    async function show(nextSrc: string, c: Crop) {
+      want = { src: nextSrc, crop: c };
       const my = ++token;
-      const img = await loadImage(next).catch(() => null);
+      const img = await loadImage(nextSrc).catch(() => null);
       if (dead || my !== token || !img || !W) return;
-      const sk = `${next}|${c.join(",")}|${W | 0}x${H | 0}|${N}`;
-      let s = samples.get(sk);
-      if (!s) { s = sample(img, c, W, H, N); samples.set(sk, s); }
+      const s = sampled(img, nextSrc, c);
       const now = performance.now(), m = Math.min(W, H), half = Math.max(W, H) / 2;
       const rnd = (a: number, b: number) => a + Math.random() * (b - a);
 
-      // Pick a different motion each time (never the same one twice in a row) with fresh settings.
-      style = (style + 1 + Math.floor(Math.random() * (STYLES - 1))) % STYLES;
+      // One gentle current for the whole flock, with a random direction and a soft sideways curl.
       const dir = Math.random() < 0.5 ? -1 : 1;
-      vcx = W / 2 + rnd(-0.18, 0.18) * W; vcy = H / 2 + rnd(-0.15, 0.15) * H;
-      squash = rnd(0.45, 1);
       const wind = Math.random() * Math.PI * 2, wx = Math.cos(wind), wy = Math.sin(wind);
-      const freq = rnd(0.004, 0.012), ph1 = rnd(0, 9), ph2 = rnd(0, 9), curl = rnd(0.8, 1.6) * Math.PI;
-      // When each particle sets off: a ripple from a random point, a sweep from a random side, or scattered.
-      const wave = Math.floor(Math.random() * 3);
+      const drift = m * rnd(0.04, 0.12), curl = rnd(0.18, 0.32) * dir;
+      // When each particle sets off: a ripple from a random point, or a sweep from a random side.
+      const ripple = Math.random() < 0.5;
       const ox = rnd(-0.3, 0.3) * W, oy = rnd(-0.3, 0.3) * H;
       const sweep = Math.random() * Math.PI * 2, swx = Math.cos(sweep), swy = Math.sin(sweep);
       const span = Math.max(W, H);
+      const first = !shown;
+      dur = first ? FIRST_MS : MORPH_MS;
 
       for (let p = 0; p < N; p++) {
         // Remember where each particle is and what tone it shows, then aim it at the new face.
@@ -208,52 +222,38 @@ export function ParticlePortrait({ src, alt, crop, className = "" }: Props) {
         fadeA[p] = fadeA[p] + (fadeB[p] - fadeA[p]) * e;
         hx[p] = s[p * 5]; hy[p] = s[p * 5 + 1]; hz[p] = s[p * 5 + 2];
         lumB[p] = s[p * 5 + 3]; fadeB[p] = s[p * 5 + 4];
-        const jitter = Math.random() * 0.08;
-        delay[p] = jitter + (wave === 0
-          ? Math.min(1, Math.hypot(hx[p] - ox, hy[p] - oy) / half) * 0.18
-          : wave === 1 ? ((hx[p] * swx + hy[p] * swy) / span + 0.5) * 0.2 : Math.random() * 0.16);
+        const jitter = Math.random() * (first ? 0.25 : 0.08);
+        delay[p] = jitter + (ripple
+          ? Math.min(1, Math.hypot(hx[p] - ox, hy[p] - oy) / half) * 0.16
+          : ((hx[p] * swx + hy[p] * swy) / span + 0.5) * 0.16);
 
-        reach[p] = m * rnd(0.08, 0.5);
-        depth[p] = rnd(0.05, 0.6);
-        swirl[p] = Math.atan2(sy[p] - vcy, sx[p] - vcx) + rnd(-0.6, 0.6);
-        spin[p] = dir * rnd(0.4, 1.6) * Math.PI;
-
-        // Bend point for the trip, depending on the motion picked above.
-        // Spread evenly: every particle's bend point is a uniformly random spot over (and a bit
-        // beyond) the whole box, so mid-flight the dust fills all the area equally, no ring or swirl.
-        ctlX[p] = rnd(-0.5, 1.5) * W; ctlY[p] = rnd(-0.5, 1.5) * H;
+        // Bend point: halfway along the trip, pushed a little sideways (a curl) and down-wind.
+        // Paths stay short and smooth, so the dust flows rather than scattering across the box.
+        const tx = W / 2 + hx[p], ty = H / 2 + hy[p];
+        const dx = tx - sx[p], dy = ty - sy[p];
+        const k = curl * rnd(0.6, 1.4);
+        ctlX[p] = (sx[p] + tx) / 2 - dy * k + wx * drift;
+        ctlY[p] = (sy[p] + ty) / 2 + dx * k + wy * drift;
       }
+      shown = true;
       morphAt = performance.now(); morphing = !reduce;
-      if (reduce) { for (let p = 0; p < N; p++) { lumA[p] = lumB[p]; fadeA[p] = fadeB[p]; col.v[p] = colour(lumB[p], fadeB[p]); } }
-      if (reduce) { place(); draw(); }
+      if (reduce) {
+        for (let p = 0; p < N; p++) { lumA[p] = lumB[p]; fadeA[p] = fadeB[p]; col[p] = colour(lumB[p], fadeB[p]); }
+        frame(performance.now(), true);
+      }
     }
 
-    const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    // Smooth start and finish (quintic ease in-out has no visible "kick" at either end).
+    const ease = (t: number) => (t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2);
     function progress(p: number, now: number) {
-      const t = (now - morphAt) / MORPH_MS;
-      return ease(Math.min(1, Math.max(0, (t - delay[p]) / 0.74)));
-    }
-
-    // Project the 3D home point with the current tilt.
-    let cyR = 1, syR = 0, cxR = 1, sxR = 0;
-    function target(p: number) {
-      const x1 = hx[p] * cyR + hz[p] * syR;
-      const z1 = -hx[p] * syR + hz[p] * cyR;
-      const y2 = hy[p] * cxR - z1 * sxR;
-      const z2 = hy[p] * sxR + z1 * cxR;
-      const k = 900 / (900 - z2);
-      return [W / 2 + x1 * k, H / 2 + y2 * k] as const;
-    }
-
-    function place() {
-      for (let p = 0; p < N; p++) { const [tx, ty] = target(p); px[p] = tx; py[p] = ty; }
-
+      const t = (now - morphAt) / dur;
+      return ease(Math.min(1, Math.max(0, (t - delay[p]) / 0.76)));
     }
 
     function draw() {
       if (!buf) return;
       u32.fill(0);
-      const bw = buf.width, bh = buf.height, c = col.v;
+      const bw = buf.width, bh = buf.height, c = col;
       for (let p = 0; p < N; p++) {
         const x = (px[p] * dpr) | 0, y = (py[p] * dpr) | 0;
         if (x < 0 || y < 0 || x >= bw - size || y >= bh - size) continue;
@@ -265,36 +265,40 @@ export function ParticlePortrait({ src, alt, crop, className = "" }: Props) {
       ctx.putImageData(buf, 0, 0);
     }
 
-    function frame(now: number) {
-      raf = requestAnimationFrame(frame);
+    function frame(now: number, once = false) {
+      if (!once) raf = requestAnimationFrame(frame);
       if (!visible || !N || !want) return;
 
       // A slow, small 3D sway so the portrait feels alive.
-      const s = now / 1000;
-      tilt.x = Math.sin(s * 0.23) * 0.32; tilt.y = Math.cos(s * 0.17) * 0.2;
-      const ry = tilt.x * 0.35, rx = -tilt.y * 0.25;
-      cyR = Math.cos(ry); syR = Math.sin(ry); cxR = Math.cos(rx); sxR = Math.sin(rx);
+      const s = reduce ? 0 : now / 1000;
+      const ry = Math.sin(s * 0.23) * 0.32 * 0.35, rx = -Math.cos(s * 0.17) * 0.2 * 0.25;
+      const cyR = Math.cos(ry), syR = Math.sin(ry), cxR = Math.cos(rx), sxR = Math.sin(rx);
+      const W2 = W / 2, H2 = H / 2;
 
-      if (morphing && now - morphAt > MORPH_MS * 1.05) {
+      if (morphing && now - morphAt > dur * 1.02) {
         morphing = false;
-        for (let p = 0; p < N; p++) { lumA[p] = lumB[p]; fadeA[p] = fadeB[p]; col.v[p] = colour(lumB[p], fadeB[p]); }
+        for (let p = 0; p < N; p++) { lumA[p] = lumB[p]; fadeA[p] = fadeB[p]; col[p] = colour(lumB[p], fadeB[p]); }
       }
 
       for (let p = 0; p < N; p++) {
-        const [tx, ty] = target(p);
+        // Project the 3D home point with the current tilt (inlined: no allocations per frame).
+        const x1 = hx[p] * cyR + hz[p] * syR;
+        const z1 = -hx[p] * syR + hz[p] * cyR;
+        const y2 = hy[p] * cxR - z1 * sxR;
+        const z2 = hy[p] * sxR + z1 * cxR;
+        const k = 900 / (900 - z2);
+        const tx = W2 + x1 * k, ty = H2 + y2 * k;
         if (morphing) {
           const e = progress(p, now), u = 1 - e, mid = Math.sin(Math.PI * e);
-          // Curve through a bend point (quadratic Bezier: old spot → bend → new spot).
-          let vx: number, vy: number;
-          vx = ctlX[p]; vy = ctlY[p];
-          let x = u * u * sx[p] + 2 * u * e * vx + e * e * tx;
-          let y = u * u * sy[p] + 2 * u * e * vy + e * e * ty;
-          // Rush toward the viewer mid-flight, then settle back: real depth, not a flat slide.
-          px[p] = x; py[p] = y;
-          // Mid-flight the dust glows gold, then cools into the new portrait's tones.
+          // Curve through the bend point (quadratic Bezier: old spot → bend → new spot).
+          px[p] = u * u * sx[p] + 2 * u * e * ctlX[p] + e * e * tx;
+          py[p] = u * u * sy[p] + 2 * u * e * ctlY[p] + e * e * ty;
+          // Mid-flight the dust warms towards gold, then cools into the new portrait's tones.
           const lum = lumA[p] + (lumB[p] - lumA[p]) * e;
           const fade = fadeA[p] + (fadeB[p] - fadeA[p]) * e;
-          col.v[p] = colour(lum + (0.72 - lum) * mid * 0.85, Math.max(fade, mid * 0.55));
+          col[p] = colour(lum + (0.72 - lum) * mid * 0.6, Math.max(fade, mid * 0.45));
+        } else if (once) {
+          px[p] = tx; py[p] = ty;
         } else {
           px[p] += (tx - px[p]) * 0.12; py[p] += (ty - py[p]) * 0.12;
         }
@@ -307,7 +311,7 @@ export function ParticlePortrait({ src, alt, crop, className = "" }: Props) {
     resize();
     ro.observe(el); io.observe(el);
     if (!reduce) raf = requestAnimationFrame(frame);
-    engine.current = { show: (a, b) => { show(a, b); } };
+    engine.current = { show: (a, b) => { show(a, b); }, prepare };
 
     return () => {
       dead = true; engine.current = null;
@@ -321,6 +325,12 @@ export function ParticlePortrait({ src, alt, crop, className = "" }: Props) {
     // `key` captures both src and crop.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
+
+  const nextKey = next ? `${next.src}|${next.crop ? next.crop.join(",") : ""}` : "";
+  useEffect(() => {
+    if (next) engine.current?.prepare(next.src, next.crop ?? [0, 0, 1, 1]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nextKey]);
 
   return (
     <div ref={wrap} role="img" aria-label={alt} className={`relative ${className}`}>

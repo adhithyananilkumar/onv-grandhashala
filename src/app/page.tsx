@@ -34,16 +34,16 @@ export default function Home() {
           </HeroStage>
         </section>
 
-        <section className="mx-auto max-w-6xl px-5 pt-16 sm:pt-24">
+        <section className="mx-auto max-w-6xl px-5 pt-14 sm:pt-24">
           <SectionHead title="What you can do here" ml="ഗ്രന്ഥശാലയിൽ എന്തെല്ലാം" />
           <ul className="space-y-4 sm:space-y-6">
             {sections.map((s, i) => (
               <li key={s.href}>
                 <Link href={s.href} className="group grid overflow-hidden rounded-3xl bg-mist-2 transition-shadow duration-300 hover:shadow-lift md:grid-cols-2">
-                  <div className={`relative h-52 overflow-hidden sm:h-64 md:h-80 ${i % 2 ? "md:order-2" : ""}`}>
+                  <div className={`relative h-44 overflow-hidden sm:h-64 md:h-80 ${i % 2 ? "md:order-2" : ""}`}>
                     <s.Art className="art-fade h-full w-full transition-transform duration-700 group-hover:scale-[1.03]" />
                   </div>
-                  <div className="flex flex-col justify-center p-6 sm:p-10">
+                  <div className="flex flex-col justify-center px-6 pt-1 pb-6 sm:p-10">
                     <h3 className="font-display text-[1.6rem] leading-tight font-bold sm:text-3xl">{s.title}</h3>
                     <p className="font-ml text-[16px] text-muted">{s.ml}</p>
                     <p className="mt-3 max-w-sm text-[17px] leading-relaxed text-ink-2">{s.text}</p>

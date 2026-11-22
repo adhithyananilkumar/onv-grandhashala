@@ -30,13 +30,13 @@ function Tap({ href, onOpen, className, children }: { href: string; onOpen?: () 
 
 export function SectionHead({ title, ml, href, cta }: { title: string; ml?: string; href?: string; cta?: string }) {
   return (
-    <div className="mb-6 flex items-end justify-between gap-4 sm:mb-8">
+    <div className="mb-5 flex items-end justify-between gap-3 sm:mb-8 sm:gap-4">
       <div className="min-w-0">
-        <h2 className="font-display text-[1.75rem] leading-tight font-bold tracking-[-0.02em] sm:text-4xl">{title}</h2>
+        <h2 className="font-display text-[1.6rem] leading-[1.15] font-bold tracking-[-0.02em] text-balance sm:text-4xl">{title}</h2>
         {ml && <p className="mt-1 font-ml text-[15px] text-muted sm:text-base">{ml}</p>}
       </div>
       {href && (
-        <Link href={href} className="group inline-flex shrink-0 items-center gap-1 rounded-full px-3 py-2 text-[15px] font-semibold text-teal">
+        <Link href={href} className="group -mr-3 -mb-2 inline-flex shrink-0 items-center gap-1 rounded-full px-3 py-2 text-[15px] font-semibold text-teal">
           {cta ?? "See all"} <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
         </Link>
       )}

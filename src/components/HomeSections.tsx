@@ -19,7 +19,7 @@ export function HomeSections() {
 
   return (
     <>
-      <section className="pt-12 sm:pt-24">
+      <section className="pt-14 sm:pt-24">
         <div className="mx-auto max-w-6xl px-5">
           <SectionHead title="New on the shelves" ml="പുതിയ പുസ്തകങ്ങൾ" href="/catalogue" cta="All books" />
         </div>
@@ -36,7 +36,7 @@ export function HomeSections() {
       </section>
 
       {(loading || auctions.length > 0) && (
-        <section className="mt-12 py-20 [background:linear-gradient(to_bottom,transparent,var(--color-kani-50)_28%,var(--color-kani-50)_72%,transparent)] sm:mt-16 sm:py-28">
+        <section className="mt-10 py-14 [background:linear-gradient(to_bottom,transparent,var(--color-kani-50)_28%,var(--color-kani-50)_72%,transparent)] sm:mt-16 sm:py-28">
           <div className="mx-auto max-w-6xl px-5">
             <SectionHead title="Naattu Vipani auctions" ml="നാട്ടിലെ ഉൽപന്നങ്ങൾ, നാട്ടുകാരിൽ നിന്ന്" href="/vipani" cta="Visit the market" />
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -47,7 +47,7 @@ export function HomeSections() {
         </section>
       )}
 
-      <section className="mx-auto max-w-6xl px-5 pt-14 sm:pt-20">
+      <section className="mx-auto max-w-6xl px-5 pt-10 sm:pt-20">
         <SectionHead title="Coming up" ml="വരാനിരിക്കുന്ന പരിപാടികൾ" href="/events" cta="All events" />
         <div className="grid gap-4 lg:grid-cols-2">
           {loading && <Row n={2} className="h-44" />}
@@ -56,7 +56,7 @@ export function HomeSections() {
         </div>
       </section>
 
-      <section className="mt-12 py-20 [background:linear-gradient(to_bottom,transparent,var(--color-royal-50)_28%,var(--color-royal-50)_72%,transparent)] sm:mt-16 sm:py-28">
+      <section className="mt-10 py-14 [background:linear-gradient(to_bottom,transparent,var(--color-royal-50)_28%,var(--color-royal-50)_72%,transparent)] sm:mt-16 sm:py-28">
         <div className="mx-auto max-w-6xl px-5">
           <SectionHead title="Classes this season" ml="കല, സംഗീതം, നൃത്തം, യോഗ" href="/classes" cta="All classes" />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

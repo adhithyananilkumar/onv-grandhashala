@@ -48,7 +48,8 @@ function Defs({ id }: { id: string }) {
 /* ───────────────────────── Hero background ───────────────────────── */
 
 /**
- * Soft pigment washes that drift slowly behind the hero. The doodles (Scene.tsx) sit on top.
+ * Soft pigment washes behind the hero. The doodles (Scene.tsx) sit on top. Static: shapes that
+ * move inside a turbulence filter force the filter to re-render every frame.
  */
 export function HeroWashes({ className }: { className?: string }) {
   const id = sid(useId());
@@ -56,10 +57,10 @@ export function HeroWashes({ className }: { className?: string }) {
     <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" className={className} aria-hidden="true">
       <Defs id={id} />
       <g filter={`url(#wash${id})`}>
-        <g className="drift drift-a"><ellipse cx="120" cy="140" rx="300" ry="210" fill={P.gold} opacity="0.3" /></g>
-        <g className="drift drift-b"><ellipse cx="1100" cy="120" rx="260" ry="180" fill={P.red} opacity="0.14" /></g>
-        <g className="drift drift-c"><ellipse cx="1080" cy="700" rx="360" ry="220" fill={P.teal} opacity="0.24" /></g>
-        <g className="drift drift-b"><ellipse cx="140" cy="720" rx="300" ry="190" fill={P.green} opacity="0.2" /></g>
+        <ellipse cx="120" cy="140" rx="300" ry="210" fill={P.gold} opacity="0.3" />
+        <ellipse cx="1100" cy="120" rx="260" ry="180" fill={P.red} opacity="0.14" />
+        <ellipse cx="1080" cy="700" rx="360" ry="220" fill={P.teal} opacity="0.24" />
+        <ellipse cx="140" cy="720" rx="300" ry="190" fill={P.green} opacity="0.2" />
       </g>
     </svg>
   );

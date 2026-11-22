@@ -70,6 +70,9 @@ export function useApi<T>(url: string | null) {
   };
 }
 
+/** Start fetching a URL into the shared cache without rendering anything (warms the next screen). */
+export const prefetchApi = (url: string) => load(url);
+
 /** All public content (books, classes, events, Vipani). */
 export const useCatalog = () => useApi<Catalog>("/api/catalog");
 

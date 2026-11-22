@@ -16,7 +16,7 @@ const commons = (file: string) => `https://commons.wikimedia.org/wiki/File:${fil
 
 /** Author photos from Wikimedia Commons, kept in public/img/authors. */
 export const portraits: Record<PortraitId, Portrait> = {
-  onv: { src: "/img/onv.png", nameMl: "ഒ.എൻ.വി. കുറുപ്പ്", years: "1931 – 2016" },
+  onv: { src: "/img/onv.jpg", nameMl: "ഒ.എൻ.വി. കുറുപ്പ്", years: "1931 – 2016" },
   guru: { src: "/img/authors/guru.jpg", nameMl: "ശ്രീനാരായണ ഗുരു", years: "1856 – 1928" },
   asan: { src: "/img/authors/asan.jpg", nameMl: "കുമാരനാശാൻ", years: "1873 – 1924", crop: [0.18, 0.19, 0.64, 0.52] },
   vallathol: { src: "/img/authors/vallathol.jpg", nameMl: "വള്ളത്തോൾ നാരായണമേനോൻ", years: "1878 – 1958", crop: [0.27, 0.0, 0.5, 0.33] },
@@ -33,7 +33,7 @@ export const portraits: Record<PortraitId, Portrait> = {
     src: "/img/authors/vt.jpg", nameMl: "വി. ടി. ഭട്ടതിരിപ്പാട്", years: "1896 – 1982",
     credit: { by: "Sreedharantp", licence: "CC BY-SA 3.0", href: commons("Vt-bhattathiri.jpg") },
   },
-  ayyankali: { src: "/img/authors/ayyankali.png", nameMl: "അയ്യങ്കാളി", years: "1863 – 1941", crop: [0.12, 0.04, 0.76, 0.66] },
+  ayyankali: { src: "/img/authors/ayyankali.jpg", nameMl: "അയ്യങ്കാളി", years: "1863 – 1941", crop: [0.12, 0.04, 0.76, 0.66] },
   ambedkar: { src: "/img/authors/ambedkar.jpg", nameMl: "ബി. ആർ. അംബേദ്കർ", years: "1891 – 1956" },
   tagore: {
     src: "/img/authors/tagore.jpg", nameMl: "രവീന്ദ്രനാഥ ടാഗോർ", years: "1861 – 1941", crop: [0.12, 0.03, 0.76, 0.62],

@@ -214,9 +214,9 @@ export function WashBanner({ seed, className }: { seed: string; className?: stri
       <Filters id={id} seed={Math.floor(r() * 90) + 1} />
       <g filter={`url(#w${id})`}>
         {spots.map((w, i) => (
-          <g key={i} className={`drift drift-${"abc"[i % 3]}`}>
-            <ellipse cx={w.cx} cy={w.cy} rx={w.rx} ry={w.ry} fill={w.fill} opacity={w.o} />
-          </g>
+          // Static on purpose: anything that moves inside a turbulence filter makes the browser
+          // re-run the whole filter every frame, which is what made phones lag.
+          <ellipse key={i} cx={w.cx} cy={w.cy} rx={w.rx} ry={w.ry} fill={w.fill} opacity={w.o} />
         ))}
       </g>
     </svg>
@@ -278,7 +278,7 @@ export function FooterScape({ className }: { className?: string }) {
           );
         })}
         <path d="M0 202 C 300 196 900 208 1200 200" strokeWidth="1.6" />
-        <g className="drift drift-boat">
+        <g>
           <path d="M520 206 Q 580 218 640 204 Q 580 212 520 206Z" fill={C.goldLight} stroke="none" />
           <path d="M600 206 L 612 172" strokeWidth="2" />
         </g>
