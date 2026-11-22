@@ -67,7 +67,7 @@ export function JoinFlow() {
 
   // Signed in (now or already): carry on to where they were going.
   useEffect(() => {
-    if (ready && member) router.replace(next ?? (justJoined ? "/me?tab=card" : "/"));
+    if (ready && member) router.replace(next ?? (justJoined ? "/me/card" : "/"));
   }, [ready, member, next, justJoined, router]);
 
   const fieldError = (e: unknown, fallback = "form") => { const x = e as ApiError; setErrors({ [x.field ?? fallback]: x.message }); };

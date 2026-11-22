@@ -1,13 +1,11 @@
-import type { Metadata } from "next";
-import { Suspense } from "react";
-import { MemberApp } from "@/components/MemberApp";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = { title: "My account" };
+// Old /me?tab=… links: each part of the account now has its own page.
+const MOVED: Record<string, string> = {
+  payments: "/me/payments", card: "/me/card", profile: "/me/profile", books: "/catalogue", bookings: "/classes",
+};
 
-export default function MePage() {
-  return (
-    <Suspense>
-      <MemberApp />
-    </Suspense>
-  );
+export default async function MePage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
+  const { tab } = await searchParams;
+  redirect(MOVED[tab ?? ""] ?? "/me/payments");
 }

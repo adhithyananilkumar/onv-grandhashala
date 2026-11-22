@@ -83,11 +83,14 @@ function Mark({ text, q }: { text: string; q: string }) {
 }
 
 /** Search button for the header plus the full-screen search it opens (also on Ctrl/⌘ K and "/"). */
-export function SearchButton({ className = "" }: { className?: string }) {
+export function SearchButton({ className = "", label }: { className?: string; label?: string }) {
   const [open, setOpen] = useState(false);
+  const btn = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // The header and the desktop sidebar each have a button; only the visible one answers the shortcut.
+      if (!btn.current?.offsetParent) return;
       const typing = e.target instanceof HTMLElement && (e.target.isContentEditable || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName));
       if ((e.key === "k" && (e.metaKey || e.ctrlKey)) || (e.key === "/" && !typing)) { e.preventDefault(); setOpen(true); }
     };
@@ -98,6 +101,7 @@ export function SearchButton({ className = "" }: { className?: string }) {
   return (
     <>
       <button
+        ref={btn}
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Search books, classes, events and the market (Ctrl K)"
@@ -105,7 +109,9 @@ export function SearchButton({ className = "" }: { className?: string }) {
         aria-haspopup="dialog"
         className={`group flex h-11 items-center gap-2 rounded-full text-ink transition-colors hover:bg-ink/5 ${className}`}
       >
-        <Search size={21} strokeWidth={2} />
+        <Search size={label ? 18 : 21} strokeWidth={2} />
+        {label && <span className="flex-1 text-left">{label}</span>}
+        {label && <kbd className="rounded-md bg-card px-1.5 py-0.5 font-sans text-[11.5px] text-muted ring-1 ring-line">Ctrl K</kbd>}
       </button>
       {/* Mounted on <body>: the header's blur would otherwise trap the fixed overlay inside it. */}
       {open && createPortal(<SearchDialog onClose={() => setOpen(false)} />, document.body)}

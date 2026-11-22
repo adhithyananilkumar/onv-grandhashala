@@ -53,9 +53,9 @@ export function SiteHeader() {
   }, [pathname]);
 
   return (
-    <header data-hide-in-search className={`sticky top-0 z-50 px-3 transition-[padding] duration-300 sm:px-5 app:max-md:bg-card app:max-md:px-0 app:max-md:pt-[env(safe-area-inset-top)] app:max-md:shadow-[0_1px_0_var(--color-line),0_6px_16px_-12px_rgb(35_27_22/0.35)] ${scrolled ? "pt-2" : "pt-3 sm:pt-4"}`}>
+    <header data-hide-in-search className={`sticky top-0 z-50 px-3 app:md:hidden transition-[padding] duration-300 sm:px-5 ${scrolled ? "pt-2" : "pt-3 sm:pt-4"}`}>
       <div
-        className={`mx-auto flex max-w-6xl items-center justify-between gap-4 rounded-full border border-white/70 bg-card/80 pr-2 pl-5 shadow-[0_10px_40px_-14px_rgb(35_27_22/0.28)] backdrop-blur-xl transition-all duration-300 sm:pl-6 app:max-md:!h-14 app:max-md:rounded-none app:max-md:border-0 app:max-md:bg-transparent app:max-md:pl-4 app:max-md:shadow-none app:max-md:backdrop-blur-none ${
+        className={`mx-auto flex max-w-6xl items-center justify-between gap-4 rounded-full border border-white/70 bg-card/80 pr-2 pl-5 shadow-[0_10px_40px_-14px_rgb(35_27_22/0.28)] backdrop-blur-xl transition-all duration-300 sm:pl-6 ${
           scrolled ? "h-14" : "h-16"
         }`}
       >
@@ -118,8 +118,8 @@ export function SiteHeader() {
 export function BottomDock() {
   const pathname = usePathname();
   return (
-    <nav data-hide-in-search aria-label="Main" className="fixed inset-x-0 bottom-0 z-50 px-3 pb-[max(10px,env(safe-area-inset-bottom))] md:hidden app:bg-card app:px-0 app:pb-[env(safe-area-inset-bottom)] app:shadow-[0_-1px_0_var(--color-line)]">
-      <ul className="mx-auto grid max-w-md grid-cols-5 gap-1 rounded-[24px] bg-royal p-1.5 shadow-bar app:max-w-none app:rounded-none app:bg-transparent app:px-1 app:py-1 app:shadow-none">
+    <nav data-hide-in-search aria-label="Main" className="fixed inset-x-0 bottom-0 z-50 px-3 pb-[max(10px,env(safe-area-inset-bottom))] md:hidden">
+      <ul className="mx-auto grid max-w-md grid-cols-5 gap-1 rounded-[24px] bg-royal p-1.5 shadow-bar">
         {nav.map((item) => {
           const active = isActive(pathname, item.href);
           const Icon = icons[item.icon];
@@ -128,11 +128,11 @@ export function BottomDock() {
               <Link
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={`group flex h-[60px] flex-col items-center justify-center gap-1 rounded-[18px] text-[11.5px] transition-colors duration-200 app:h-16 app:rounded-none app:bg-transparent ${
-                  active ? "bg-mist font-semibold text-royal app:text-royal" : "text-mist/75 active:bg-white/10 app:text-ink-2 app:active:bg-transparent"
+                className={`group flex h-[60px] flex-col items-center justify-center gap-1 rounded-[18px] text-[11.5px] transition-colors duration-200 ${
+                  active ? "bg-mist font-semibold text-royal" : "text-mist/75 active:bg-white/10"
                 }`}
               >
-                <span className={`grid h-8 w-14 place-items-center rounded-full transition-colors duration-200 ${active ? "app:bg-royal-50" : "app:group-active:bg-mist-2"}`}>
+                <span className="grid h-8 w-14 place-items-center rounded-full">
                   <Icon size={21} strokeWidth={active ? 2.2 : 1.8} />
                 </span>
                 {item.label}

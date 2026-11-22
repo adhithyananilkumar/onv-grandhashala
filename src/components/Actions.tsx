@@ -16,7 +16,7 @@ export function useMember() {
 const ghost = "inline-flex items-center justify-center rounded-full border-2 border-royal px-5 py-3 text-[15.5px] font-semibold transition-colors hover:bg-royal hover:text-mist";
 const solid = "inline-flex items-center justify-center rounded-full bg-royal px-5 py-3 text-[15.5px] font-semibold text-mist transition-colors hover:bg-royal-700";
 
-function AfterLinks({ back, label, mine = "/me?tab=bookings", mineLabel = "My bookings" }: { back: string; label: string; mine?: string; mineLabel?: string }) {
+function AfterLinks({ back, label, mine = "/classes", mineLabel = "Your classes" }: { back: string; label: string; mine?: string; mineLabel?: string }) {
   return (
     <>
       <Link href={back} className={ghost}>{label}</Link>
@@ -70,7 +70,7 @@ export function ReserveForm({ book }: { book: Book }) {
     return (
       <Done title={queue ? "You're in the queue" : "Reservation sent"} reference={a.done.request.id}
         text={queue ? `We'll message you when a copy of ${book.title} comes back.` : `The desk will set ${book.title} aside and tell you when it's ready. Shelf ${book.shelf}.`}>
-        <AfterLinks back="/catalogue" label="Find another book" mine="/me?tab=books" mineLabel="My books" />
+        <AfterLinks back="/catalogue" label="Find another book" mine="/catalogue" mineLabel="Your books" />
       </Done>
     );
   }
@@ -96,7 +96,7 @@ export function EnrolForm({ c: item }: { c: ClassItem }) {
   if (a.done) {
     return (
       <Done title="Seat booked" reference={a.done.request.id} text={`${who === "Myself" ? "You're" : `${student} is`} enrolled in ${item.title}. First class: ${item.schedule}, with ${item.teacher}.${a.done.payment ? ` Fee ${inr(a.done.payment.amount)} is in your payments.` : ""}`}>
-        <AfterLinks back="/classes" label="See other classes" mine={a.done.payment ? "/me?tab=payments" : "/me?tab=bookings"} mineLabel={a.done.payment ? "Pay the fee" : "My bookings"} />
+        <AfterLinks back="/classes" label="See other classes" mine={a.done.payment ? "/me/payments" : "/classes"} mineLabel={a.done.payment ? "Pay the fee" : "Your classes"} />
       </Done>
     );
   }
@@ -137,7 +137,7 @@ export function RegisterForm({ e: ev }: { e: EventItem }) {
   if (a.done) {
     return (
       <Done title="You're registered" reference={a.done.request.id} text={`${people} ${people === 1 ? "place" : "places"} for ${ev.title}${health ? `, ${slot.toLowerCase()} token` : ""}. ${ev.place}, ${ev.time}.`}>
-        <AfterLinks back="/events" label="See other events" />
+        <AfterLinks back="/events" label="See other events" mine="/events" mineLabel="Your events" />
       </Done>
     );
   }
@@ -167,7 +167,7 @@ export function OrderForm({ p }: { p: Product }) {
   if (a.done) {
     return (
       <Done title="Order placed" reference={a.done.request.id} text={`${qty} × ${p.name}, ${inr(qty * p.price)}. Collect at the library: ${pickup.toLowerCase()}. Pay now by UPI, or when you collect.`}>
-        <AfterLinks back="/vipani" label="Back to the market" mine="/me?tab=payments" mineLabel="Pay now" />
+        <AfterLinks back="/vipani" label="Back to the market" mine="/me/payments" mineLabel="Pay now" />
       </Done>
     );
   }
@@ -204,7 +204,7 @@ export function BidForm({ p }: { p: Product }) {
   if (a.done) {
     return (
       <Done title="Your bid is in" reference={a.done.request.id} text={`You're the highest bidder at ${inr(a.done.request.amount ?? Number(amount))}. We'll message you if someone outbids you, and when the auction closes.`}>
-        <AfterLinks back="/vipani" label="Back to the market" />
+        <AfterLinks back="/vipani" label="Back to the market" mine="/vipani" mineLabel="Your orders" />
       </Done>
     );
   }

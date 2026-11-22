@@ -155,6 +155,8 @@
       "title": "Carnatic Vocal",
       "titleMl": "കർണാടക സംഗീതം",
       "teacher": "Smt. Lakshmi",
+      "teacherNote": "Trained at Swathi Thirunal College of Music, teaching children in the village for over 15 years.",
+      "about": "Learn swaras, simple varnams and devotional songs, step by step. Beginners welcome; no harmonium needed.",
       "schedule": "Sat & Sun · 4:00 PM",
       "ages": "8+",
       "fee": "₹300 / month",
@@ -166,6 +168,8 @@
       "title": "Drawing & Painting",
       "titleMl": "ചിത്രരചന",
       "teacher": "Sri. Anil Kumar",
+      "teacherNote": "Art teacher and muralist; his students' work hangs in the library every Onam.",
+      "about": "Pencil sketching, watercolour and poster colours, from simple shapes to nature scenes. Paper is provided; bring your own brushes if you have them.",
       "schedule": "Sunday · 10:00 AM",
       "ages": "6 – 16",
       "fee": "₹200 / month",
@@ -177,6 +181,8 @@
       "title": "Bharatanatyam",
       "titleMl": "ഭരതനാട്യം",
       "teacher": "Smt. Divya",
+      "teacherNote": "Performer and teacher, trained in the Kalakshetra style.",
+      "about": "Adavus, mudras and short items, building up to a stage performance at the library anniversary.",
       "schedule": "Wed & Sat · 5:00 PM",
       "ages": "6+",
       "fee": "₹400 / month",
@@ -188,6 +194,8 @@
       "title": "Yoga for All",
       "titleMl": "യോഗ",
       "teacher": "Sri. Mohanan",
+      "teacherNote": "Certified yoga instructor who has run the morning batch for eight years.",
+      "about": "Gentle stretches, breathing and asanas for every body. Bring a mat or a bedsheet.",
       "schedule": "Daily · 6:00 AM",
       "ages": "All ages",
       "fee": "Free",
@@ -199,6 +207,8 @@
       "title": "PSC Coaching",
       "titleMl": "പി.എസ്.സി പരിശീലനം",
       "teacher": "Volunteer team",
+      "teacherNote": "Library members who have cleared PSC exams, taking turns each week.",
+      "about": "Weekly mock tests, GK and Malayalam grammar practice for Kerala PSC exams, with old question papers to take home.",
       "schedule": "Sunday · 2:00 PM",
       "ages": "18+",
       "fee": "Free",
@@ -210,6 +220,8 @@
       "title": "Computer Basics",
       "titleMl": "കമ്പ്യൂട്ടർ പഠനം",
       "teacher": "Akshaya volunteers",
+      "teacherNote": "Volunteers from the nearby Akshaya centre, patient with first-timers.",
+      "about": "Using a phone and computer with confidence: typing, WhatsApp, email, online forms and safe payments.",
       "schedule": "Tue & Thu · 6:30 PM",
       "ages": "40+",
       "fee": "Free",
@@ -289,7 +301,34 @@
       "auction": {
         "currentBid": 1150,
         "bids": 7,
-        "endsAt": "2026-11-21T18:00:00+05:30"
+        "endsAt": "2026-11-21T18:00:00+05:30",
+        "history": [
+          {
+            "by": "Suma R.",
+            "amount": 1150,
+            "at": "2026-11-21T16:42:00+05:30"
+          },
+          {
+            "by": "Rajan P.",
+            "amount": 1100,
+            "at": "2026-11-21T15:10:00+05:30"
+          },
+          {
+            "by": "Suma R.",
+            "amount": 1050,
+            "at": "2026-11-21T11:25:00+05:30"
+          },
+          {
+            "by": "Fathima N.",
+            "amount": 1000,
+            "at": "2026-11-20T19:05:00+05:30"
+          },
+          {
+            "by": "Rajan P.",
+            "amount": 980,
+            "at": "2026-11-20T09:30:00+05:30"
+          }
+        ]
       }
     },
     {
@@ -303,7 +342,29 @@
       "auction": {
         "currentBid": 140,
         "bids": 4,
-        "endsAt": "2026-11-19T20:00:00+05:30"
+        "endsAt": "2026-11-19T20:00:00+05:30",
+        "history": [
+          {
+            "by": "Vinod M.",
+            "amount": 140,
+            "at": "2026-11-19T18:20:00+05:30"
+          },
+          {
+            "by": "Lissy T.",
+            "amount": 120,
+            "at": "2026-11-19T12:45:00+05:30"
+          },
+          {
+            "by": "Vinod M.",
+            "amount": 100,
+            "at": "2026-11-18T17:00:00+05:30"
+          },
+          {
+            "by": "Arun S.",
+            "amount": 90,
+            "at": "2026-11-18T08:15:00+05:30"
+          }
+        ]
       }
     },
     {
@@ -326,7 +387,24 @@
       "auction": {
         "currentBid": 420,
         "bids": 3,
-        "endsAt": "2026-11-23T17:00:00+05:30"
+        "endsAt": "2026-11-23T17:00:00+05:30",
+        "history": [
+          {
+            "by": "Meera K.",
+            "amount": 420,
+            "at": "2026-11-22T10:05:00+05:30"
+          },
+          {
+            "by": "Hari V.",
+            "amount": 380,
+            "at": "2026-11-21T20:40:00+05:30"
+          },
+          {
+            "by": "Meera K.",
+            "amount": 360,
+            "at": "2026-11-21T14:00:00+05:30"
+          }
+        ]
       }
     }
   ],

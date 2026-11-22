@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import {
-  BadgeIndianRupee, BookOpen, BookUp, CalendarDays, ClipboardList, Gavel, House, IdCard, LayoutDashboard, LibraryBig,
+  BadgeIndianRupee, BookOpen, BookUp, CalendarDays, ClipboardList, House, IdCard, LayoutDashboard, LibraryBig,
   LogOut, Megaphone, Palette, Settings, ShieldCheck, ShoppingBasket, UserRound, Users, Wallet, X,
 } from "lucide-react";
 import { useApi } from "@/lib/api";
@@ -42,14 +42,12 @@ export function AppDrawer({ open, onClose }: { open: boolean; onClose: () => voi
 
   const mine: Item[] = [
     { href: "/", label: "Home", icon: House },
-    { href: "/me?tab=books", label: "My books", icon: BookOpen, badge: out ? String(out) : undefined },
-    { href: "/me?tab=payments", label: "Payments", icon: Wallet, badge: owed ? inr(owed) : undefined },
-    { href: "/me?tab=bookings", label: "Bookings & orders", icon: Gavel },
-    { href: "/me?tab=card", label: "Library card", icon: IdCard },
-    { href: "/me?tab=profile", label: "Profile & PIN", icon: UserRound },
+    { href: "/me/payments", label: "Payments", icon: Wallet, badge: owed ? inr(owed) : undefined },
+    { href: "/me/card", label: "Library card", icon: IdCard },
+    { href: "/me/profile", label: "Profile & PIN", icon: UserRound },
   ];
   const explore: Item[] = [
-    { href: "/catalogue", label: "Find a book", icon: LibraryBig },
+    { href: "/catalogue", label: "Books", icon: LibraryBig, badge: out ? String(out) : undefined },
     { href: "/classes", label: "Classes", icon: Palette },
     { href: "/events", label: "Events & camps", icon: CalendarDays },
     { href: "/vipani", label: "Naattu Vipani", icon: ShoppingBasket },

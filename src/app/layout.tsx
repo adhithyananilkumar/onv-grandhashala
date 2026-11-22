@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import { Anek_Malayalam, Bricolage_Grotesque, Figtree } from "next/font/google";
 import { SiteHeader, BottomDock } from "@/components/Nav";
+import { AppSidebar } from "@/components/AppSidebar";
 import { Footer } from "@/components/Footer";
 import { ChromeGate } from "@/components/ChromeGate";
 import { ScrollTop } from "@/components/ScrollTop";
@@ -39,12 +40,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: AUTH_HINT }} />
       </head>
-      <body className="flex min-h-svh flex-col pb-[calc(88px+env(safe-area-inset-bottom))] md:pb-0 app:pb-[calc(76px+env(safe-area-inset-bottom))] app:md:pb-0">
+      <body className="flex min-h-svh flex-col pb-[calc(88px+env(safe-area-inset-bottom))] md:pb-0 app:md:pb-0 app:md:pl-[288px]">
         <Suspense><ScrollTop /></Suspense>
         {/* The chrome reads the URL; on pages with ids in them that happens at request time. */}
         <Suspense fallback={<div aria-hidden className="h-[76px] md:h-20" />}><ChromeGate><SiteHeader /></ChromeGate></Suspense>
-        <main className="min-h-svh flex-1">{children}</main>
-        <Suspense><ChromeGate><div className="app:max-md:hidden"><Footer /></div></ChromeGate></Suspense>
+        {/* Signed in on desktop: a fixed sidebar replaces the top nav, and the page sits beside it. */}
+        <Suspense><ChromeGate><AppSidebar /></ChromeGate></Suspense>
+        <main className="min-h-svh flex-1 app:md:pt-5 app:md:pb-12">{children}</main>
+        <Suspense><ChromeGate><div className="app:hidden"><Footer /></div></ChromeGate></Suspense>
         <Suspense><ChromeGate><BottomDock /></ChromeGate></Suspense>
         <Suspense><LoginHost /></Suspense>
       </body>

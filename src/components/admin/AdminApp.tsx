@@ -70,7 +70,7 @@ export function AdminApp() {
   return (
     <div className="mx-auto flex max-w-7xl gap-6 px-0 pb-10 sm:px-5 lg:pt-6">
       {/* Desktop: side rail */}
-      <aside className="sticky top-24 hidden h-fit w-60 shrink-0 rounded-[24px] bg-card p-2 ring-1 ring-line/70 lg:block">
+      <aside className="sticky top-24 app:md:top-5 hidden h-fit w-60 shrink-0 rounded-[24px] bg-card p-2 ring-1 ring-line/70 lg:block">
         <p className="px-3 pt-2 pb-1 text-[12px] font-semibold tracking-[0.14em] text-muted uppercase">Admin</p>
         {SECTIONS.map((x) => (
           <button key={x.key} onClick={() => go(x.key)} aria-current={s === x.key ? "page" : undefined}
@@ -83,7 +83,7 @@ export function AdminApp() {
 
       <div className="min-w-0 flex-1">
         {/* Phones: title + scrolling section chips under the app bar */}
-        <div className="sticky top-14 z-30 bg-mist/95 px-4 pt-3 pb-2 backdrop-blur-xl md:top-20 lg:static lg:bg-transparent lg:px-0 lg:pt-0 lg:backdrop-blur-none">
+        <div className="sticky top-14 z-30 bg-mist/95 px-4 pt-3 pb-2 backdrop-blur-xl md:top-20 app:md:top-0 lg:static lg:bg-transparent lg:px-0 lg:pt-0 lg:backdrop-blur-none">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
               <p className="text-[12px] font-semibold tracking-[0.14em] text-kani-700 uppercase">Admin</p>

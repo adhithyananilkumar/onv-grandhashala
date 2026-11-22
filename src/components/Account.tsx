@@ -2,82 +2,58 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
-  BookOpen, CalendarDays, Check, CheckCircle2, Clock3, Copy, CreditCard, Gavel, History, IdCard, KeyRound, Landmark,
-  LogOut, Palette, Receipt, RefreshCw, ShoppingBasket, Smartphone, UserRound, Wallet, X,
+  BookOpen, Check, CheckCircle2, Clock3, Copy, CreditCard, KeyRound, Landmark,
+  LogOut, Receipt, Smartphone, UserRound, Wallet, X,
 } from "lucide-react";
-import { api, ApiError, invalidate, refreshContent, useApi } from "@/lib/api";
+import { api, ApiError, invalidate, useApi } from "@/lib/api";
 import { logout, updateSessionUser, useSession } from "@/lib/session";
-import { daysLeft, dueLabel, fine, fmtDate, fmtShort, inr, loanTone, PAYMENT_LABEL, paymentTone, Pill, REQUEST_LABEL, requestTone } from "@/lib/format";
-import type { LibRequest, Loan, MemberSummary, Payment, User } from "@/lib/types";
+import { fine, fmtShort, inr, PAYMENT_LABEL, paymentTone, Pill } from "@/lib/format";
+import type { MemberSummary, Payment, User } from "@/lib/types";
 import { Choice, Field, FormError, OtpInput, PhoneInput, Sheet, Skeleton, Submit, TextInput } from "./forms";
 import { LibraryCard } from "./LibraryCard";
 import { LoginForm } from "./LoginSheet";
+import { PageHero } from "./ui";
+import type { SceneSet } from "./Scene";
 
-const TABS = [
-  { key: "books", label: "Books", icon: BookOpen },
-  { key: "payments", label: "Payments", icon: Wallet },
-  { key: "bookings", label: "Bookings", icon: Gavel },
-  { key: "card", label: "Card", icon: IdCard },
-  { key: "profile", label: "Profile", icon: UserRound },
-] as const;
-type Tab = (typeof TABS)[number]["key"];
+/** The member's own pages, each at its own address. */
+export type AccountSection = "payments" | "card" | "profile";
 
-const KIND_ICON = { Reserve: BookOpen, Enrol: Palette, Register: CalendarDays, Order: ShoppingBasket, Bid: Gavel };
+const BANNERS: Record<AccountSection, { title: string; ml: string; art: SceneSet }> = {
+  payments: { title: "Payments", ml: "പണമടയ്ക്കൽ", art: "home" },
+  card: { title: "Library card", ml: "ലൈബ്രറി കാർഡ്", art: "books" },
+  profile: { title: "Profile & PIN", ml: "പ്രൊഫൈൽ", art: "join" },
+};
 
-export function MemberApp() {
+export function AccountPage({ section }: { section: AccountSection }) {
   const { user, ready } = useSession();
-  const params = useSearchParams();
-  const router = useRouter();
-  const tab = (TABS.some((t) => t.key === params.get("tab")) ? params.get("tab") : "books") as Tab;
   const { data, error, loading } = useApi<MemberSummary>(user ? "/api/me" : null);
-
-  if (!ready) return <div className="mx-auto max-w-3xl space-y-3 px-4 pt-6"><Skeleton className="h-12" /><Skeleton className="h-40" /><Skeleton className="h-40" /></div>;
-  if (!user) {
-    return (
-      <div className="mx-auto max-w-md px-4 pt-10 pb-16">
-        <h1 className="font-display text-3xl font-extrabold tracking-tight">Your account</h1>
-        <p className="mt-1 text-muted">Sign in to see your books, payments and bookings.</p>
-        <div className="mt-6 rounded-[28px] bg-card p-5 ring-1 ring-line/70 sm:p-6"><LoginForm /></div>
-      </div>
-    );
-  }
-
-  const go = (t: Tab) => router.replace(`/me?tab=${t}`, { scroll: false });
-  const due = data ? data.payments.filter((p) => p.status === "due").reduce((s, p) => s + p.amount, 0) : 0;
+  const b = BANNERS[section];
 
   return (
-    <div className="mx-auto max-w-3xl pb-10">
-      {/* Title + tabs: sticky under the app bar, like an Android screen. */}
-      <div className="sticky top-14 z-30 bg-mist/95 backdrop-blur-xl md:top-20">
-        <div className="px-4 pt-4 sm:px-5">
-          <h1 className="font-display text-[1.7rem] leading-tight font-extrabold tracking-tight">My account</h1>
-          <p className="text-[14px] text-muted">{user.name} · {user.card}</p>
-        </div>
-        <div role="tablist" aria-label="Account sections" className="no-scrollbar mt-2 flex gap-1 overflow-x-auto border-b border-line px-2 sm:px-3">
-          {TABS.map((t) => (
-            <button key={t.key} role="tab" aria-selected={tab === t.key} onClick={() => go(t.key)}
-              className={`relative flex shrink-0 items-center gap-2 px-3.5 py-3 text-[14.5px] font-semibold transition-colors ${tab === t.key ? "text-royal" : "text-muted hover:text-ink"}`}>
-              <t.icon size={17} /> {t.label}
-              {t.key === "payments" && due > 0 && <span className="rounded-full bg-laterite px-1.5 text-[11px] font-bold text-mist">{inr(due)}</span>}
-              {tab === t.key && <span className="absolute inset-x-2 -bottom-px h-[3px] rounded-t-full bg-royal" />}
-            </button>
-          ))}
-        </div>
+    <>
+      <PageHero title={b.title} ml={b.ml} art={b.art} compact />
+      <div className="mx-auto mt-6 max-w-6xl px-4 pb-10 sm:mt-8 sm:px-5" key={section}>
+        {!ready ? (
+          <div className="space-y-3"><Skeleton className="h-28" /><Skeleton className="h-28" /></div>
+        ) : !user ? (
+          <div className="max-w-md rounded-[28px] bg-card p-5 ring-1 ring-line/70 sm:p-6">
+            <p className="mb-4 text-[15px] text-ink-2">Sign in to see your payments, card and profile.</p>
+            <LoginForm />
+          </div>
+        ) : (
+          <>
+            {error && <FormError>{error.message}</FormError>}
+            {loading || !data ? (
+              <div className="space-y-3"><Skeleton className="h-28" /><Skeleton className="h-28" /><Skeleton className="h-28" /></div>
+            ) : section === "payments" ? <PaymentsTab d={data} />
+              : section === "card" ? <CardTab u={data.user} />
+              : <ProfileTab u={data.user} />}
+          </>
+        )}
       </div>
-
-      <div className="px-4 pt-5 sm:px-5" key={tab}>
-        {error && <FormError>{error.message}</FormError>}
-        {loading || !data ? (
-          <div className="space-y-3"><Skeleton className="h-28" /><Skeleton className="h-28" /><Skeleton className="h-28" /></div>
-        ) : tab === "books" ? <BooksTab d={data} />
-          : tab === "payments" ? <PaymentsTab d={data} />
-          : tab === "bookings" ? <BookingsTab d={data} />
-          : tab === "card" ? <CardTab u={data.user} />
-          : <ProfileTab u={data.user} />}
-      </div>
-    </div>
+    </>
   );
 }
 
@@ -110,114 +86,6 @@ function useToast() {
   const [msg, setMsg] = useState<string | null>(null);
   const show = (m: string) => { setMsg(m); setTimeout(() => setMsg((x) => (x === m ? null : x)), 3500); };
   return { show, node: msg ? <Toast msg={msg} onClose={() => setMsg(null)} /> : null };
-}
-
-/* ───────── Books ───────── */
-
-function BooksTab({ d }: { d: MemberSummary }) {
-  const toast = useToast();
-  const [busy, setBusy] = useState<string | null>(null);
-  const [err, setErr] = useState<string>();
-  const [now] = useState(() => Date.now());
-  const out = d.loans.filter((l) => !l.returnedAt).sort((a, b) => a.dueAt.localeCompare(b.dueAt));
-  const past = d.loans.filter((l) => l.returnedAt);
-  const reserves = d.requests.filter((r) => r.kind === "Reserve" && ["pending", "ready"].includes(r.status));
-
-  const renew = async (l: Loan) => {
-    setBusy(l.id); setErr(undefined);
-    try { await api(`/api/loans/${l.id}/renew`, { body: {} }); invalidate("/api/me"); toast.show(`${l.title} renewed.`); }
-    catch (e) { setErr((e as ApiError).message); }
-    finally { setBusy(null); }
-  };
-  const cancel = async (r: LibRequest) => {
-    setBusy(r.id); setErr(undefined);
-    try { await api(`/api/requests/${r.id}`, { method: "PATCH", body: { status: "cancelled" } }); refreshContent(); toast.show("Reservation cancelled."); }
-    catch (e) { setErr((e as ApiError).message); }
-    finally { setBusy(null); }
-  };
-
-  return (
-    <>
-      <FormError>{err}</FormError>
-      {reserves.length > 0 && (
-        <>
-          <H count={reserves.length}>Reserved</H>
-          <ul className="space-y-2.5">
-            {reserves.map((r) => (
-              <li key={r.id} className={`flex items-center gap-3 rounded-3xl p-4 ${r.status === "ready" ? "bg-kani-50" : "bg-card ring-1 ring-line/70"}`}>
-                <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-card text-royal"><BookOpen size={20} /></span>
-                <div className="min-w-0 flex-1">
-                  <Link href={`/catalogue/${r.itemId}`} className="block truncate font-semibold">{r.title}</Link>
-                  <p className="text-[13.5px] text-muted">{r.status === "ready" ? "Waiting for you at the desk" : r.detail} · {r.id}</p>
-                </div>
-                <div className="flex flex-col items-end gap-1.5">
-                  <Pill tone={requestTone(r.status)}>{REQUEST_LABEL[r.status]}</Pill>
-                  <button onClick={() => cancel(r)} disabled={busy === r.id} className="text-[13px] font-semibold text-laterite-700 disabled:opacity-50">Cancel</button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-
-      <H count={out.length}>On loan</H>
-      {out.length ? (
-        <ul className="space-y-3">
-          {out.map((l) => {
-            const tone = loanTone(l);
-            const f = fine(l, d.finePerDay);
-            const total = new Date(l.dueAt).getTime() - new Date(l.issuedAt).getTime();
-            const used = Math.min(1, Math.max(0, (now - new Date(l.issuedAt).getTime()) / total));
-            const late = daysLeft(l.dueAt) < 0;
-            const canRenew = !late && l.renewals < d.maxRenewals;
-            return (
-              <li key={l.id} className="rounded-3xl bg-card p-4 ring-1 ring-line/70">
-                <div className="flex items-start gap-3">
-                  <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-royal-50 text-royal"><BookOpen size={20} /></span>
-                  <div className="min-w-0 flex-1">
-                    <Link href={`/catalogue/${l.bookId}`} className="block truncate font-semibold">{l.title}</Link>
-                    <p className="text-[13.5px] text-muted">Borrowed {fmtShort(l.issuedAt)} · renewed {l.renewals}/{d.maxRenewals}</p>
-                  </div>
-                  <Pill tone={tone}>{dueLabel(l).split(" · ")[0]}</Pill>
-                </div>
-                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-mist-2">
-                  <div className={`h-full rounded-full ${tone === "bad" ? "bg-laterite" : tone === "warn" ? "bg-kani" : "bg-teal"}`} style={{ width: `${used * 100}%` }} />
-                </div>
-                <div className="mt-3 flex items-center justify-between gap-3">
-                  <p className="text-[13.5px] text-ink-2">{late ? <span className="font-semibold text-laterite-700">Fine so far {inr(f)} ({inr(d.finePerDay)}/day)</span> : `Return by ${fmtDate(l.dueAt)}`}</p>
-                  <button onClick={() => renew(l)} disabled={!canRenew || busy === l.id}
-                    title={late ? "Overdue books must come back to the desk" : l.renewals >= d.maxRenewals ? "Renewal limit reached" : undefined}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-royal px-4 py-2 text-[14px] font-semibold text-mist transition active:scale-95 disabled:bg-mist-2 disabled:text-muted">
-                    <RefreshCw size={15} className={busy === l.id ? "animate-spin" : ""} /> Renew
-                  </button>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      ) : (
-        <Empty icon={BookOpen} text="No books with you right now. Reserve one and collect it at the desk." href="/catalogue" cta="Find a book" />
-      )}
-
-      {past.length > 0 && (
-        <>
-          <H count={past.length}>Reading history</H>
-          <ul className="divide-y divide-line overflow-hidden rounded-3xl bg-card ring-1 ring-line/70">
-            {past.map((l) => (
-              <li key={l.id}>
-                <Link href={`/catalogue/${l.bookId}`} className="flex items-center gap-3 px-4 py-3 active:bg-mist">
-                  <History size={17} className="shrink-0 text-muted" />
-                  <span className="min-w-0 flex-1 truncate font-medium">{l.title}</span>
-                  <span className="text-[13px] text-muted">{fmtShort(l.issuedAt)} – {fmtShort(l.returnedAt!)}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-      {toast.node}
-    </>
-  );
 }
 
 /* ───────── Payments ───────── */
@@ -383,66 +251,16 @@ function PaySheet({ p, upi, onClose, onDone }: { p: Payment; upi: MemberSummary[
   );
 }
 
-/* ───────── Bookings ───────── */
-
-function BookingsTab({ d }: { d: MemberSummary }) {
-  const toast = useToast();
-  const [busy, setBusy] = useState<string | null>(null);
-  const [err, setErr] = useState<string>();
-  const list = d.requests.filter((r) => r.kind !== "Reserve");
-  const open = list.filter((r) => ["pending", "confirmed", "ready"].includes(r.status));
-  const closed = list.filter((r) => !open.includes(r));
-
-  const cancel = async (r: LibRequest) => {
-    if (!confirm(`Cancel ${r.title}?`)) return;
-    setBusy(r.id); setErr(undefined);
-    try { await api(`/api/requests/${r.id}`, { method: "PATCH", body: { status: "cancelled" } }); refreshContent(); toast.show("Cancelled."); }
-    catch (e) { setErr((e as ApiError).message); }
-    finally { setBusy(null); }
-  };
-
-  const row = (r: LibRequest) => {
-    const I = KIND_ICON[r.kind];
-    const canCancel = ["pending", "confirmed", "ready"].includes(r.status) && r.kind !== "Bid";
-    const href = r.kind === "Enrol" ? `/classes/${r.itemId}` : r.kind === "Register" ? `/events/${r.itemId}` : `/vipani/${r.itemId}`;
-    return (
-      <li key={r.id} className="rounded-3xl bg-card p-4 ring-1 ring-line/70">
-        <div className="flex items-start gap-3">
-          <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-mist-2 text-ink-2"><I size={20} /></span>
-          <div className="min-w-0 flex-1">
-            <Link href={href} className="block truncate font-semibold">{r.title}</Link>
-            <p className="text-[13.5px] text-muted">{r.detail}</p>
-            {r.note && <p className="text-[13.5px] text-laterite-700">{r.note}</p>}
-          </div>
-          <Pill tone={requestTone(r.status)}>{r.kind === "Bid" && r.status === "confirmed" ? "Leading" : REQUEST_LABEL[r.status]}</Pill>
-        </div>
-        <div className="mt-2 flex items-center justify-between text-[13px] text-muted">
-          <span className="font-mono">{r.id} · {fmtShort(r.at)}</span>
-          {canCancel && <button onClick={() => cancel(r)} disabled={busy === r.id} className="font-semibold text-laterite-700 disabled:opacity-50">Cancel</button>}
-        </div>
-      </li>
-    );
-  };
-
-  return (
-    <>
-      <FormError>{err}</FormError>
-      <H count={open.length}>Active</H>
-      {open.length ? <ul className="space-y-2.5">{open.map(row)}</ul> : <Empty icon={CalendarDays} text="No classes, events or orders booked." href="/classes" cta="Browse classes" />}
-      {closed.length > 0 && (<><H count={closed.length}>Past</H><ul className="space-y-2.5 opacity-80">{closed.map(row)}</ul></>)}
-      {toast.node}
-    </>
-  );
-}
-
 /* ───────── Card ───────── */
 
 function CardTab({ u }: { u: User }) {
   return (
-    <div className="mx-auto max-w-md">
-      <LibraryCard name={u.name} cardNo={u.card} since={u.since} />
-      <p className="mt-3 text-center text-[14px] text-muted">Show this at the desk to borrow books. ലൈബ്രറി കാർഡ്</p>
-      <dl className="mt-6 divide-y divide-line overflow-hidden rounded-3xl bg-card ring-1 ring-line/70">
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)]">
+      <div className="max-w-md">
+        <LibraryCard name={u.name} cardNo={u.card} since={u.since} />
+        <p className="mt-3 text-[14px] text-muted">Show this at the desk to borrow books.</p>
+      </div>
+      <dl className="divide-y divide-line overflow-hidden rounded-3xl bg-card ring-1 ring-line/70">
         {[["Library number", u.card], ["Member since", u.since], ["Mobile", `+91 ${u.phone.slice(0, 5)} ${u.phone.slice(5)}`], ["Address", u.ward ?? "—"], ["Account", u.role === "admin" ? "Library staff" : "Member"]].map(([k, v]) => (
           <div key={k} className="flex items-center justify-between gap-4 px-4 py-3"><dt className="text-[14px] text-muted">{k}</dt><dd className="text-right font-semibold">{v}</dd></div>
         ))}

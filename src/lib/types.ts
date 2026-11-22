@@ -18,6 +18,10 @@ export type ClassItem = {
   title: string;
   titleMl: string;
   teacher: string;
+  /** A line or two on what the class covers. */
+  about?: string;
+  /** Short note on the teacher. */
+  teacherNote?: string;
   schedule: string;
   ages: string;
   fee: string;
@@ -44,7 +48,11 @@ export type Product = {
   price: number;
   unit: string;
   emoji: string;
-  auction?: { currentBid: number; bids: number; endsAt: string };
+  auction?: {
+    currentBid: number; bids: number; endsAt: string;
+    /** Latest bids, newest first (bidder shown as first name + initial). */
+    history?: { by: string; amount: number; at: string }[];
+  };
 };
 
 export type Catalog = { books: Book[]; classes: ClassItem[]; events: EventItem[]; products: Product[] };

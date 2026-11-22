@@ -37,6 +37,8 @@ export const SCHEMA: Record<ContentType, { noun: string; plural: string; prefix:
       { key: "title", label: "Name (English)", type: "text", required: true },
       { key: "titleMl", label: "Name (Malayalam)", type: "text", required: true },
       { key: "teacher", label: "Teacher", type: "text", required: true },
+      { key: "teacherNote", label: "About the teacher", type: "textarea" },
+      { key: "about", label: "About the class", type: "textarea" },
       { key: "schedule", label: "When", type: "text", required: true, hint: "e.g. Sat & Sun · 4:00 PM" },
       { key: "ages", label: "Ages", type: "text", required: true, half: true },
       { key: "fee", label: "Fee", type: "text", required: true, half: true, hint: "Free, or ₹300 / month" },
@@ -122,7 +124,7 @@ export function clean(type: ContentType, input: Record<string, unknown>, prev?: 
       const ends = new Date(`${auctionEnds}${String(auctionEnds).length === 16 ? ":00+05:30" : ""}`);
       if (Number.isNaN(ends.getTime())) return { ok: false, field: "auctionEnds", error: "Auction closes: use a date and time." };
       const before = (prev as Product | undefined)?.auction;
-      rest.auction = { currentBid: (auctionBid as number) || (rest.price as number), bids: before?.bids ?? 0, endsAt: ends.toISOString() };
+      rest.auction = { currentBid: (auctionBid as number) || (rest.price as number), bids: before?.bids ?? 0, endsAt: ends.toISOString(), history: before?.history };
     }
     return { ok: true, value: rest };
   }

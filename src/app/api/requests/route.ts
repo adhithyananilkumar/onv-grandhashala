@@ -4,6 +4,8 @@ import type { LibRequest, Payment } from "@/lib/types";
 
 const feeNum = (f: string) => (f === "Free" ? 0 : Number(f.replace(/[^\d]/g, "")) || 0);
 const inr = (n: number) => `₹${n.toLocaleString("en-IN")}`;
+/** "Anil Kumar" → "Anil K." so the public bid list doesn't show full names. */
+const shortName = (n: string) => { const [first, ...rest] = n.trim().split(/\s+/); return rest.length ? `${first} ${rest[rest.length - 1][0]}.` : first; };
 
 /**
  * A member acts on something: reserve a book, enrol in a class, register for an event,
@@ -83,6 +85,7 @@ export const POST = handle(async (req: Request) => {
       if (amount < min) return { error: `Bid at least ${inr(min)}.`, status: 409 };
       p.auction.currentBid = amount;
       p.auction.bids += 1;
+      p.auction.history = [{ by: shortName(me.name), amount, at: now }, ...(p.auction.history ?? [])].slice(0, 10);
       for (const x of db.requests) if (x.kind === "Bid" && x.itemId === itemId && x.status === "confirmed") { x.status = "declined"; x.note = `Outbid at ${inr(amount)}`; }
       const request: LibRequest = { ...base, id: newId("BID"), kind: "Bid", title: p.name, detail: `Highest bid ${inr(amount)}`, amount, status: "confirmed" };
       db.requests.unshift(request);

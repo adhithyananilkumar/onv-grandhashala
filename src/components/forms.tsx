@@ -148,7 +148,6 @@ export function Done({ title, reference, text, children }: { title: string; refe
   return (
     <div className="sheet-up py-4 text-center" role="status">
       <div className="relative mx-auto grid size-20 place-items-center">
-        <span className="absolute inset-0 animate-ping rounded-full bg-teal/15 [animation-iteration-count:2]" />
         <span className="absolute inset-0 rounded-full bg-teal-50" />
         <CheckCircle2 size={44} className="relative text-teal" strokeWidth={1.7} />
       </div>
