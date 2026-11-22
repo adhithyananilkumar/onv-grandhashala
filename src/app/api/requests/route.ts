@@ -1,4 +1,4 @@
-import { cardKey, newId, write } from "@/server/db";
+import { cardKey, headcount, newId, write } from "@/server/db";
 import { body, fail, handle, ok, requireUser, str } from "@/server/http";
 import type { LibRequest, Payment } from "@/lib/types";
 
@@ -56,6 +56,9 @@ export const POST = handle(async (req: Request) => {
       if (!e) return { error: "That event isn't on the calendar.", status: 404 };
       if (open("Register")) return { error: "You're already registered. See My bookings.", status: 409 };
       const people = Math.min(6, Math.max(1, Number(b.people) || 1));
+      const cap = e.capacity ?? 0;
+      const left = cap - headcount(db, itemId);
+      if (cap > 0 && people > left) return { error: left > 0 ? `Only ${left} places left.` : "This event is full.", status: 409 };
       const slot = str(b.slot, 30);
       const request: LibRequest = { ...base, id: newId("EVT"), kind: "Register", title: e.title, detail: `${people} ${people === 1 ? "person" : "people"}${e.kind === "Health" && slot ? ` · ${slot} token` : ""}`, status: "confirmed" };
       db.requests.unshift(request);
@@ -78,14 +81,17 @@ export const POST = handle(async (req: Request) => {
     if (kind === "Bid") {
       const p = db.products.find((x) => x.id === itemId);
       if (!p?.auction) return { error: "That auction isn't running.", status: 404 };
-      if (new Date(p.auction.endsAt).getTime() < Date.now()) return { error: "This auction has closed.", status: 409 };
+      if (p.auction.closedAt || new Date(p.auction.endsAt).getTime() < Date.now()) return { error: "This auction has closed.", status: 409 };
       const step = p.auction.currentBid >= 1000 ? 50 : 10;
       const amount = Math.round(Number(b.amount) || 0);
       const min = p.auction.currentBid + step;
       if (amount < min) return { error: `Bid at least ${inr(min)}.`, status: 409 };
       p.auction.currentBid = amount;
       p.auction.bids += 1;
-      p.auction.history = [{ by: shortName(me.name), amount, at: now }, ...(p.auction.history ?? [])].slice(0, 10);
+      p.auction.history = [{ by: shortName(me.name), amount, at: now, src: "online" as const }, ...(p.auction.history ?? [])].slice(0, 12);
+      p.auction.leader = { name: me.name, card: me.card };
+      // While staff run it live, a bid in the last two minutes keeps the room open a little longer.
+      if (p.auction.live && new Date(p.auction.endsAt).getTime() - Date.now() < 120_000) p.auction.endsAt = new Date(Date.now() + 120_000).toISOString();
       for (const x of db.requests) if (x.kind === "Bid" && x.itemId === itemId && x.status === "confirmed") { x.status = "declined"; x.note = `Outbid at ${inr(amount)}`; }
       const request: LibRequest = { ...base, id: newId("BID"), kind: "Bid", title: p.name, detail: `Highest bid ${inr(amount)}`, amount, status: "confirmed" };
       db.requests.unshift(request);

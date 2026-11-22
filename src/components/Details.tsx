@@ -5,7 +5,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Armchair, ArrowLeft, BookOpen, CalendarDays, Clock3, Gavel, Languages, Library, MapPin, Package, SearchX, Store, Tag, Ticket, Timer, Trophy, UserRound, Users, History, Wallet, ListChecks, TrendingUp, ArrowUp } from "lucide-react";
-import { useCatalog } from "@/lib/api";
+import { useCatalog, useLivePoll } from "@/lib/api";
 import { fmtTime, inr } from "@/lib/format";
 import type { ClassItem, Product } from "@/lib/types";
 import { BidForm, EnrolForm, OrderForm, RegisterForm, ReserveForm } from "./Actions";
@@ -220,7 +220,7 @@ function BidChart({ a, start, closed }: { a: Auction; start: number; closed: boo
 function RecentBids({ a, start, show = 5 }: { a: Auction; start: number; show?: number }) {
   const history = a.history ?? [];
   const list = history.slice(0, show);
-  const closed = new Date(a.endsAt).getTime() < Date.now();
+  const closed = !!a.closedAt || new Date(a.endsAt).getTime() < Date.now();
   const change = a.currentBid - start;
   const step = a.currentBid >= 1000 ? 50 : 10;
   const prevOf = (i: number) => history[i + 1]?.amount ?? (history.length >= a.bids ? start : undefined);
@@ -308,6 +308,8 @@ function RecentBids({ a, start, show = 5 }: { a: Auction; start: number; show?: 
 
 export function ProductDetail() {
   const { item: p, loading, error } = useItem("products");
+  const watch = p?.auction;
+  useLivePoll(!!watch && !watch.closedAt, watch?.live ? 3000 : 15000, watch?.endsAt);
   if (loading) return <DetailSkeleton />;
   if (!p) return <Missing back="/vipani" label="Naattu Vipani" error={error?.message} />;
   const a = p.auction;
@@ -321,7 +323,7 @@ export function ProductDetail() {
         a
           ? { icon: Gavel, label: "Highest bid", value: `₹${a.currentBid.toLocaleString("en-IN")} · ${a.bids} bids` }
           : { icon: Gavel, label: "Price", value: `₹${p.price}` },
-        a ? { icon: Timer, label: "Closes", value: <Countdown to={a.endsAt} /> } : { icon: Timer, label: "Pickup", value: "Saturday market day" },
+        a ? { icon: Timer, label: a.live && !a.closedAt ? "LIVE now" : "Closes", value: a.closedAt ? <span className="text-[13px] font-medium text-laterite">{a.winner ? "Sold" : "Auction closed"}</span> : <Countdown to={a.endsAt} /> } : { icon: Timer, label: "Pickup", value: "Saturday market day" },
       ]}
       formTitle={a ? "Place a bid" : "Buy"} formNote={a ? "The highest bid when the timer ends wins." : "Order now, pay by UPI or when you collect."}
       form={a ? <BidForm p={p} /> : <OrderForm p={p} />}

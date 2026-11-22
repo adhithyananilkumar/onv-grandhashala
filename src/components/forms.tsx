@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef } from "react";
-import { CheckCircle2, Minus, Plus, X, type LucideIcon } from "lucide-react";
+import { CheckCircle2, KeyRound, Minus, Plus, X, type LucideIcon } from "lucide-react";
 
 /** Bottom sheet on phones, centred dialog on larger screens. Esc and backdrop close it. */
 export function Sheet({ title, subtitle, onClose, children }: { title: string; subtitle?: string; onClose: () => void; children: React.ReactNode }) {
@@ -22,12 +22,12 @@ export function Sheet({ title, subtitle, onClose, children }: { title: string; s
         aria-modal="true"
         aria-label={title}
         onClick={(e) => e.stopPropagation()}
-        className="sheet-up max-h-[92svh] w-full max-w-md overflow-y-auto rounded-t-[28px] bg-mist p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-2xl sm:rounded-[28px] sm:p-6"
+        className="sheet-up max-h-[92svh] w-full max-w-md overflow-y-auto rounded-t-[28px] bg-mist p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-2xl ring-1 ring-line/60 sm:max-w-lg sm:rounded-[28px] sm:p-7"
       >
         <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-line sm:hidden" />
-        <div className="mb-4 flex items-start justify-between gap-3">
+        <div className="mb-5 flex items-start justify-between gap-3 border-b border-line/70 pb-4">
           <div>
-            <h2 className="font-display text-xl leading-tight font-bold">{title}</h2>
+            <h2 className="font-display text-[1.4rem] leading-tight font-bold">{title}</h2>
             {subtitle && <p className="text-[15px] text-muted">{subtitle}</p>}
           </div>
           <button onClick={onClose} aria-label="Close" className="grid size-10 shrink-0 place-items-center rounded-full bg-mist-2 hover:bg-line"><X size={18} /></button>
@@ -105,8 +105,26 @@ export function FormError({ children }: { children?: React.ReactNode }) {
   return <p role="alert" className="rounded-2xl bg-laterite-50 px-4 py-3 text-[14.5px] font-medium text-laterite-700">{children}</p>;
 }
 
-/** Boxes for a code or PIN; typing or pasting fills them in order. `mask` shows dots instead of digits. */
-export function OtpInput({ value, onChange, label = "6-digit code", mask, autoFocus, length = 6 }: { value: string; onChange: (v: string) => void; label?: string; mask?: boolean; autoFocus?: boolean; length?: number }) {
+/** Boxes for a code; typing or pasting fills them in order. `mask` (a PIN) renders a normal hidden field instead. */
+export function OtpInput({ value, onChange, label = "6-digit code", mask, autoFocus, length = 6, placeholder }: { value: string; onChange: (v: string) => void; label?: string; mask?: boolean; autoFocus?: boolean; length?: number; placeholder?: string }) {
+  if (mask) {
+    return (
+      <Shell icon={KeyRound}>
+        <input
+          type="password"
+          autoFocus={autoFocus}
+          inputMode="numeric"
+          pattern="[0-9]*"
+          autoComplete="off"
+          aria-label={label}
+          placeholder={placeholder ?? label}
+          value={value}
+          onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, length))}
+          className="h-full min-w-0 flex-1 bg-transparent text-[16.5px] tracking-[0.3em] placeholder:tracking-normal placeholder:text-muted focus:outline-none focus-visible:outline-none"
+        />
+      </Shell>
+    );
+  }
   return (
     <div className="relative">
       <input
@@ -118,23 +136,13 @@ export function OtpInput({ value, onChange, label = "6-digit code", mask, autoFo
         onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, length))}
         className="peer absolute inset-0 z-10 w-full cursor-text opacity-0"
       />
-      {mask ? (
-        <div className="flex justify-center gap-3" aria-hidden="true">
-          {Array.from({ length }, (_, i) => (
-            <div key={i} className={`grid size-[46px] place-items-center rounded-xl bg-card [filter:var(--field-filter)] ring-2 transition-all ${i === value.length ? "ring-royal" : "ring-transparent"}`}>
-              <span className={`rounded-full transition-all ${value[i] ? "size-3.5 bg-royal" : "size-1.5 bg-ink/15"}`} />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${length}, minmax(0, 1fr))` }} aria-hidden="true">
+      <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${length}, minmax(0, 1fr))` }} aria-hidden="true">
           {Array.from({ length }, (_, i) => (
             <div key={i} className={`grid h-14 place-items-center rounded-2xl bg-card [filter:var(--field-filter)] font-display text-2xl font-bold tabular-nums ring-2 transition-all ${i === value.length ? "ring-royal" : value[i] ? "ring-royal/30" : "ring-transparent"}`}>
               {value[i] ?? ""}
             </div>
           ))}
         </div>
-      )}
     </div>
   );
 }

@@ -201,6 +201,15 @@ export function BidForm({ p }: { p: Product }) {
   const current = auc.currentBid;
   const [amount, setAmount] = useState(String(current + step));
   const min = current + step;
+  const closed = !!auc.closedAt;
+  if (closed) {
+    return (
+      <div className="rounded-2xl bg-mist-2 p-4 text-center">
+        <p className="font-display text-xl font-bold">{auc.winner ? "Sold" : "Bidding has closed"}</p>
+        <p className="mt-1 text-[15px] text-ink-2">{auc.winner ? `Final price ${inr(auc.currentBid)}.` : "This auction is over."}</p>
+      </div>
+    );
+  }
   if (a.done) {
     return (
       <Done title="Your bid is in" reference={a.done.request.id} text={`You're the highest bidder at ${inr(a.done.request.amount ?? Number(amount))}. We'll message you if someone outbids you, and when the auction closes.`}>
@@ -216,6 +225,7 @@ export function BidForm({ p }: { p: Product }) {
       a.send({ kind: "Bid", itemId: p.id, amount: v });
     }}>
       <Booker />
+      {auc.live && <p className="flex items-center gap-2 rounded-2xl bg-teal-50 px-4 py-2.5 text-[14px] font-semibold text-teal-700"><span className="size-2 animate-pulse rounded-full bg-teal" /> Live in the hall now. Bids called there show up here.</p>}
       <div className="rounded-2xl bg-royal-50 p-4">
         <p className="text-[14px] text-ink-2">Highest bid now</p>
         <p className="font-display text-3xl font-extrabold tabular-nums">{inr(current)}</p>

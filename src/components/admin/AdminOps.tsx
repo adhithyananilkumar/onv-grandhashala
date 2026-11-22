@@ -1,127 +1,62 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import {
-  BadgeIndianRupee, BookOpen, BookUp, CalendarDays, Check, ClipboardList, LayoutDashboard, Megaphone, Palette, Plus,
-  RotateCcw, Settings, ShieldAlert, ShoppingBasket, Undo2, UserPlus, Users, X,
+  BookOpen, BookUp, CalendarDays, Check, Gavel, Megaphone, Minus, Plus, RotateCcw, UserPlus, Undo2, Users, Wallet, X,
 } from "lucide-react";
-import { api, useApi } from "@/lib/api";
-import { useSession } from "@/lib/session";
+import { api } from "@/lib/api";
 import { daysLeft, dueLabel, fine, fmtShort, fmtTime, inr, loanTone, Pill, REQUEST_LABEL, requestTone } from "@/lib/format";
 import type { AdminOverview, LibRequest, Loan, RequestKind } from "@/lib/types";
-import { Skeleton } from "../forms";
-import { LoginForm } from "../LoginSheet";
+import { useAdmin, usePending } from "./AdminShell";
 import { Btn, Chips, EmptyRow, inputBox, Labeled, matchText, Panel, SearchBox, Stat, useRun } from "./kit";
-import { ContentManager, MembersPanel, NoticesPanel, PaymentsPanel, SettingsPanel } from "./AdminContent";
 
-export const SECTIONS = [
-  { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { key: "desk", label: "Issue & return", icon: BookUp },
-  { key: "requests", label: "Requests", icon: ClipboardList },
-  { key: "members", label: "Members", icon: Users },
-  { key: "payments", label: "Payments", icon: BadgeIndianRupee },
-  { key: "books", label: "Catalogue", icon: BookOpen },
-  { key: "classes", label: "Classes", icon: Palette },
-  { key: "events", label: "Events", icon: CalendarDays },
-  { key: "products", label: "Vipani", icon: ShoppingBasket },
-  { key: "notices", label: "Notices", icon: Megaphone },
-  { key: "settings", label: "Settings", icon: Settings },
-] as const;
-export type Section = (typeof SECTIONS)[number]["key"];
+const istDay = () => new Date(Date.now() + 5.5 * 3_600_000).toISOString().slice(0, 10);
 
-export function AdminApp() {
-  const { user, ready, isAdmin } = useSession();
-  const params = useSearchParams();
-  const router = useRouter();
-  const s = (SECTIONS.some((x) => x.key === params.get("s")) ? params.get("s") : "dashboard") as Section;
-  const { data, error } = useApi<AdminOverview>(isAdmin ? "/api/admin/overview" : null);
-  const go = (k: Section, extra = "") => router.push(k === "dashboard" ? "/admin" : `/admin?s=${k}${extra}`, { scroll: false });
+/* ───────── Dashboard ───────── */
 
-  if (!ready) return <div className="mx-auto max-w-6xl space-y-3 px-4 pt-6"><Skeleton className="h-12" /><Skeleton className="h-40" /></div>;
-  if (!user) {
-    return (
-      <div className="mx-auto max-w-md px-4 pt-10 pb-16">
-        <h1 className="font-display text-3xl font-extrabold tracking-tight">Library staff</h1>
-        <p className="mt-1 text-muted">Sign in with a staff library card.</p>
-        <div className="mt-6 rounded-[28px] bg-card p-5 ring-1 ring-line/70"><LoginForm /></div>
-      </div>
-    );
-  }
-  if (!isAdmin) {
-    return (
-      <div className="mx-auto grid max-w-md place-items-center px-5 py-24 text-center">
-        <span className="grid size-16 place-items-center rounded-full bg-laterite-50 text-laterite-700"><ShieldAlert size={28} /></span>
-        <h1 className="mt-4 font-display text-2xl font-bold">Staff only</h1>
-        <p className="mt-1 text-muted">This area is for library staff. Ask the librarian if you need access.</p>
-        <Link href="/" className="mt-6 rounded-full bg-royal px-5 py-3 font-semibold text-mist">Go home</Link>
-      </div>
-    );
-  }
-
-  const counts: Partial<Record<Section, number>> = data ? {
-    requests: data.requests.filter((r) => r.status === "pending").length,
-    payments: data.payments.filter((p) => p.status === "verifying").length,
-    desk: data.loans.filter((l) => !l.returnedAt && daysLeft(l.dueAt) < 0).length,
-  } : {};
-  const current = SECTIONS.find((x) => x.key === s)!;
-
+/** One box that finds books, members and events, so staff never have to know which screen to open. */
+function FindAnything({ d }: { d: AdminOverview }) {
+  const { go } = useAdmin();
+  const [q, setQ] = useState("");
+  const t = q.trim();
+  const books = useMemo(() => (t ? d.books.filter((b) => matchText(t, b.title, b.titleMl, b.author, b.shelf, b.category, b.id)).slice(0, 4) : []), [t, d.books]);
+  const members = useMemo(() => (t ? d.members.filter((m) => matchText(t, m.name, m.card, m.phone, m.ward)).slice(0, 4) : []), [t, d.members]);
+  const events = useMemo(() => (t ? d.events.filter((e) => matchText(t, e.title, e.titleMl, e.place)).slice(0, 3) : []), [t, d.events]);
+  const none = t && !books.length && !members.length && !events.length;
+  const row = "flex w-full items-center gap-3 px-4 py-3 text-left active:bg-mist-2";
   return (
-    <div className="mx-auto flex max-w-7xl gap-6 px-0 pb-10 sm:px-5 lg:pt-6">
-      {/* Desktop: side rail */}
-      <aside className="sticky top-24 app:md:top-5 hidden h-fit w-60 shrink-0 rounded-[24px] bg-card p-2 ring-1 ring-line/70 lg:block">
-        <p className="px-3 pt-2 pb-1 text-[12px] font-semibold tracking-[0.14em] text-muted uppercase">Admin</p>
-        {SECTIONS.map((x) => (
-          <button key={x.key} onClick={() => go(x.key)} aria-current={s === x.key ? "page" : undefined}
-            className={`flex h-11 w-full items-center gap-3 rounded-full px-3 text-[15px] font-medium ${s === x.key ? "bg-royal-50 font-semibold text-royal" : "text-ink-2 hover:bg-mist-2"}`}>
-            <x.icon size={18} /> <span className="flex-1 text-left">{x.label}</span>
-            {!!counts[x.key] && <span className="rounded-full bg-laterite px-2 text-[12px] font-bold text-mist">{counts[x.key]}</span>}
-          </button>
-        ))}
-      </aside>
-
-      <div className="min-w-0 flex-1">
-        {/* Phones: title + scrolling section chips under the app bar */}
-        <div className="sticky top-14 z-30 bg-mist/95 px-4 pt-3 pb-2 backdrop-blur-xl md:top-20 app:md:top-0 lg:static lg:bg-transparent lg:px-0 lg:pt-0 lg:backdrop-blur-none">
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-[12px] font-semibold tracking-[0.14em] text-kani-700 uppercase">Admin</p>
-              <h1 className="truncate font-display text-[1.6rem] leading-tight font-extrabold tracking-tight">{current.label}</h1>
-            </div>
-          </div>
-          <div className="no-scrollbar -mx-4 mt-2 flex gap-1.5 overflow-x-auto px-4 lg:hidden">
-            {SECTIONS.map((x) => (
-              <button key={x.key} onClick={() => go(x.key)} aria-pressed={s === x.key}
-                className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[13.5px] font-semibold ${s === x.key ? "bg-royal text-mist" : "bg-card text-ink-2 ring-1 ring-line/70"}`}>
-                <x.icon size={15} /> {x.label}
-                {!!counts[x.key] && <span className={`rounded-full px-1.5 text-[11px] font-bold ${s === x.key ? "bg-mist text-royal" : "bg-laterite text-mist"}`}>{counts[x.key]}</span>}
-              </button>
-            ))}
-          </div>
+    <div className="relative">
+      <SearchBox value={q} onChange={setQ} placeholder="Find a book, member or event" />
+      {t && (
+        <div className="mt-2 overflow-hidden rounded-3xl bg-card ring-1 ring-line/70">
+          {none && <p className="px-4 py-5 text-center text-muted">Nothing found for &ldquo;{t}&rdquo;.</p>}
+          {books.map((b) => (
+            <button key={b.id} className={row} onClick={() => go("books", { q: t })}>
+              <BookOpen size={18} className="shrink-0 text-royal" />
+              <span className="min-w-0 flex-1"><b className="block truncate font-semibold">{b.title}</b><span className="block truncate text-[13px] text-muted">{b.author} · shelf {b.shelf}</span></span>
+              <Pill tone={b.available > 0 ? "good" : "bad"}>{b.available}/{b.copies}</Pill>
+            </button>
+          ))}
+          {members.map((m) => (
+            <button key={m.card} className={`${row} border-t border-line/60`} onClick={() => go("members", { id: m.card })}>
+              <Users size={18} className="shrink-0 text-royal" />
+              <span className="min-w-0 flex-1"><b className="block truncate font-semibold">{m.name}</b><span className="block truncate text-[13px] text-muted">{m.card} · +91 {m.phone}</span></span>
+            </button>
+          ))}
+          {events.map((e) => (
+            <button key={e.id} className={`${row} border-t border-line/60`} onClick={() => go("events", { id: e.id })}>
+              <CalendarDays size={18} className="shrink-0 text-royal" />
+              <span className="min-w-0 flex-1"><b className="block truncate font-semibold">{e.title}</b><span className="block truncate text-[13px] text-muted">{fmtShort(`${e.date}T00:00:00+05:30`)} · {e.place}</span></span>
+            </button>
+          ))}
         </div>
-
-        <div className="px-4 pt-3 lg:px-0" key={s}>
-          {error && <p className="mb-3 rounded-2xl bg-laterite-50 px-4 py-3 text-laterite-700">{error.message}</p>}
-          {!data ? (
-            <div className="grid gap-3 sm:grid-cols-2"><Skeleton className="h-28" /><Skeleton className="h-28" /><Skeleton className="h-64 sm:col-span-2" /></div>
-          ) : s === "dashboard" ? <Dashboard d={data} go={go} />
-            : s === "desk" ? <Desk d={data} />
-            : s === "requests" ? <Requests d={data} />
-            : s === "members" ? <MembersPanel d={data} />
-            : s === "payments" ? <PaymentsPanel d={data} />
-            : s === "notices" ? <NoticesPanel d={data} />
-            : s === "settings" ? <SettingsPanel d={data} />
-            : <ContentManager d={data} type={s} />}
-        </div>
-      </div>
+      )}
     </div>
   );
 }
 
-/* ───────── Dashboard ───────── */
-
-function Dashboard({ d, go }: { d: AdminOverview; go: (k: Section, extra?: string) => void }) {
+export function Dashboard({ d }: { d: AdminOverview }) {
+  const { go } = useAdmin();
   const r = useRun();
   const out = d.loans.filter((l) => !l.returnedAt);
   const late = out.filter((l) => daysLeft(l.dueAt) < 0);
@@ -131,9 +66,42 @@ function Dashboard({ d, go }: { d: AdminOverview; go: (k: Section, extra?: strin
   const month = new Date().toISOString().slice(0, 7);
   const collected = d.payments.filter((p) => p.status === "paid" && (p.paidAt ?? "").startsWith(month)).reduce((s, p) => s + p.amount, 0);
   const copies = d.books.reduce((s, b) => s + b.copies, 0);
+  const live = d.products.filter((p) => p.auction?.live && !p.auction.closedAt);
+  const today = istDay();
+  const upcoming = d.events.filter((e) => e.date >= today).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 3);
+  const regs = (id: string) => d.requests.filter((x) => x.itemId === id && x.kind === "Register" && ["pending", "confirmed", "ready", "done"].includes(x.status)).length + d.guests.filter((g) => g.eventId === id).length;
+  const visitors = d.visits[today] ?? 0;
+  const tally = (delta: number) => r.run("visit", () => api("/api/admin/visits", { body: { delta } }));
 
   return (
     <div className="space-y-4">
+      <FindAnything d={d} />
+
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+        {[
+          { l: "Issue a book", I: BookUp, k: "desk" as const },
+          { l: "New member", I: UserPlus, k: "members" as const, a: "new" },
+          { l: "Add a book", I: Plus, k: "books" as const, a: "new" },
+          { l: "Register for event", I: CalendarDays, k: "events" as const, a: "register" },
+          { l: "Money in", I: Wallet, k: "accounts" as const, a: "in" },
+          { l: "Money out", I: Minus, k: "accounts" as const, a: "out" },
+          { l: "Live bidding", I: Gavel, k: "auctions" as const },
+          { l: "Post notice", I: Megaphone, k: "notices" as const },
+        ].map((a) => (
+          <button key={a.l} onClick={() => go(a.k, a.a ? { action: a.a } : undefined)} className="flex min-h-14 items-center gap-3 rounded-2xl bg-royal px-4 py-3 text-left text-[14.5px] leading-tight font-semibold text-mist active:scale-[0.97] sm:hover:bg-royal-700">
+            <a.I size={19} className="shrink-0 text-kani" /> {a.l}
+          </button>
+        ))}
+      </div>
+
+      {live.map((p) => (
+        <button key={p.id} onClick={() => go("auctions", { id: p.id })} className="flex w-full items-center gap-3 rounded-3xl bg-teal-50 p-4 text-left ring-1 ring-teal/30 active:scale-[0.99]">
+          <span className="relative grid size-11 shrink-0 place-items-center rounded-2xl bg-teal text-mist"><Gavel size={21} /><span className="absolute -top-1 -right-1 size-3 animate-pulse rounded-full bg-laterite ring-2 ring-teal-50" /></span>
+          <span className="min-w-0 flex-1"><span className="block text-[12px] font-bold tracking-[0.12em] text-teal-700 uppercase">Live now</span><b className="block truncate font-display text-[1.05rem]">{p.name}</b><span className="block text-[13.5px] text-ink-2">{inr(p.auction!.currentBid)} · {p.auction!.bids} bids</span></span>
+          <span className="text-[13px] font-semibold text-teal-700">Run it →</span>
+        </button>
+      ))}
+
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label="Members" value={d.members.length} sub={`${d.members.filter((m) => m.role === "admin").length} staff`} onClick={() => go("members")} />
         <Stat label="Books out" value={out.length} sub={`of ${copies} copies`} onClick={() => go("desk")} />
@@ -141,18 +109,16 @@ function Dashboard({ d, go }: { d: AdminOverview; go: (k: Section, extra?: strin
         <Stat label="Collected" value={inr(collected)} sub={`this month · ${inr(dueTotal)} due`} tone="bg-teal-50" onClick={() => go("payments")} />
       </div>
 
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {[
-          { l: "Issue a book", I: BookUp, k: "desk" as const },
-          { l: "New member", I: UserPlus, k: "members" as const, x: "&new=1" },
-          { l: "Add a book", I: Plus, k: "books" as const, x: "&new=1" },
-          { l: "Post notice", I: Megaphone, k: "notices" as const },
-        ].map((a) => (
-          <button key={a.l} onClick={() => go(a.k, a.x)} className="flex items-center gap-3 rounded-2xl bg-royal px-4 py-3.5 text-left text-[14.5px] font-semibold text-mist active:scale-[0.98] sm:hover:bg-royal-700">
-            <a.I size={19} className="shrink-0 text-kani" /> {a.l}
-          </button>
-        ))}
-      </div>
+      <Panel title="Reading room today" action={<span className="hidden text-[13px] text-muted sm:inline">for the Library Council count</span>}>
+        <div className="flex items-center justify-between gap-4">
+          <Btn tone="soft" icon={Minus} disabled={r.busy === "visit" || visitors <= 0} onClick={() => tally(-1)} aria-label="One less" className="size-14 p-0!" />
+          <div className="text-center"><p className="font-display text-5xl leading-none font-extrabold tabular-nums">{visitors}</p><p className="mt-1 text-[13px] text-muted">visitors in so far</p></div>
+          <Btn icon={Plus} disabled={r.busy === "visit"} onClick={() => tally(1)} aria-label="One more" className="size-14 p-0!" />
+        </div>
+        <div className="mt-3 flex gap-2">
+          {[5, 10].map((n) => <Btn key={n} tone="ghost" className="flex-1" disabled={r.busy === "visit"} onClick={() => tally(n)}>+{n}</Btn>)}
+        </div>
+      </Panel>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Panel title={<>Waiting for you <span className="text-muted">{pending.length}</span></>} action={<Btn tone="soft" onClick={() => go("requests")}>All requests</Btn>}>
@@ -179,7 +145,23 @@ function Dashboard({ d, go }: { d: AdminOverview; go: (k: Section, extra?: strin
           ) : <EmptyRow>Nothing to check.</EmptyRow>}
         </Panel>
 
-        <Panel title={<>Overdue <span className="text-muted">{late.length}</span></>} className="lg:col-span-2">
+        <Panel title="Coming up" action={<Btn tone="soft" onClick={() => go("events")}>Events</Btn>}>
+          {upcoming.length ? (
+            <ul className="divide-y divide-line">
+              {upcoming.map((e) => (
+                <li key={e.id}>
+                  <button onClick={() => go("events", { id: e.id })} className="flex w-full items-center gap-3 py-3 text-left">
+                    <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-royal-50 text-center font-display text-[12px] leading-tight font-bold text-royal">{fmtShort(`${e.date}T00:00:00+05:30`)}</span>
+                    <span className="min-w-0 flex-1"><b className="block truncate font-semibold">{e.title}</b><span className="block truncate text-[13px] text-muted">{e.time} · {e.place}</span></span>
+                    <span className="text-[13px] font-semibold text-royal">{regs(e.id)}{e.capacity ? `/${e.capacity}` : ""} in</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : <EmptyRow>No events coming up.</EmptyRow>}
+        </Panel>
+
+        <Panel title={<>Overdue <span className="text-muted">{late.length}</span></>}>
           {late.length ? (
             <ul className="divide-y divide-line">
               {late.map((l) => <LoanRow key={l.id} l={l} d={d} r={r} />)}
@@ -194,7 +176,7 @@ function Dashboard({ d, go }: { d: AdminOverview; go: (k: Section, extra?: strin
 
 /* ───────── Shared rows ───────── */
 
-function LoanRow({ l, d, r }: { l: Loan; d: AdminOverview; r: ReturnType<typeof useRun> }) {
+export function LoanRow({ l, d, r }: { l: Loan; d: AdminOverview; r: ReturnType<typeof useRun> }) {
   const m = d.members.find((x) => x.card === l.card);
   const f = fine(l, d.settings.finePerDay);
   const ret = (waiveFine = false) => r.run(l.id, () => api<{ payment?: { amount: number } }>(`/api/admin/loans/${l.id}/return`, { body: { waiveFine } }),
@@ -216,7 +198,7 @@ function LoanRow({ l, d, r }: { l: Loan; d: AdminOverview; r: ReturnType<typeof 
   );
 }
 
-function RequestRow({ x, d, r, compact }: { x: LibRequest; d: AdminOverview; r: ReturnType<typeof useRun>; compact?: boolean }) {
+export function RequestRow({ x, d, r, compact }: { x: LibRequest; d: AdminOverview; r: ReturnType<typeof useRun>; compact?: boolean }) {
   const set = (status: string, msg: string) => r.run(x.id, () => api(`/api/requests/${x.id}`, { method: "PATCH", body: { status } }), msg);
   const issue = () => r.run(x.id, () => api("/api/admin/loans", { body: { card: x.card, bookId: x.itemId, requestId: x.id } }), `${x.title} issued to ${x.name}.`);
   const book = x.kind === "Reserve" ? d.books.find((b) => b.id === x.itemId) : undefined;
@@ -251,11 +233,12 @@ function RequestRow({ x, d, r, compact }: { x: LibRequest; d: AdminOverview; r: 
 
 /* ───────── Desk: issue and return ───────── */
 
-function Desk({ d }: { d: AdminOverview }) {
+export function Desk({ d }: { d: AdminOverview }) {
   const r = useRun();
   const [card, setCard] = useState("");
   const [bq, setBq] = useState("");
   const [bookId, setBookId] = useState("");
+  usePending("desk", (p) => { if (p.id) setBookId(p.id); if (p.q) setCard(p.q); });
   const [days, setDays] = useState(String(d.settings.loanDays));
   const [q, setQ] = useState("");
   const key = card.match(/\d{4}/)?.[0];
@@ -331,7 +314,7 @@ function Desk({ d }: { d: AdminOverview }) {
 const STATUS_TABS = ["Open", "Waiting", "Ready", "Closed", "All"] as const;
 const KINDS = ["All kinds", "Reserve", "Enrol", "Register", "Order", "Bid"] as const;
 
-function Requests({ d }: { d: AdminOverview }) {
+export function Requests({ d }: { d: AdminOverview }) {
   const r = useRun();
   const [tab, setTab] = useState<(typeof STATUS_TABS)[number]>("Open");
   const [kind, setKind] = useState<(typeof KINDS)[number]>("All kinds");

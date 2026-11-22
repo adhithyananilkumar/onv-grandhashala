@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, KeyRound, LockKeyhole } from "lucide-react";
+import { BookOpen, LockKeyhole } from "lucide-react";
 import { ApiError } from "@/lib/api";
 import { login, onAskLogin, useSession } from "@/lib/session";
 import { Field, FormError, OtpInput, Sheet, Submit, TextInput } from "./forms";
@@ -74,10 +74,7 @@ export function LoginForm({ onDone, onLeave, compact = true }: { onDone?: () => 
         {(id) => <TextInput icon={BookOpen} id={id} autoFocus inputMode="numeric" autoComplete="username" placeholder="Library ID · ഐഡി (4 digits)" value={card} onChange={(e) => { setCard(e.target.value.replace(/\D/g, "").slice(0, 4)); setErrors({}); }} />}
       </Field>
       <div>
-        <div className="flex items-center gap-4">
-          <KeyRound size={22} className="ml-3 shrink-0 text-royal" aria-hidden />
-          <div className="flex-1"><OtpInput mask length={4} value={pin} onChange={(v) => { setPin(v); setErrors({}); }} label="4-digit PIN" /></div>
-        </div>
+        <OtpInput mask length={4} value={pin} onChange={(v) => { setPin(v); setErrors({}); }} label="4-digit PIN" placeholder="PIN · പിൻ (4 digits)" />
         {errors.pin && <p className="mt-1 text-[13.5px] font-medium text-laterite" role="alert">{errors.pin}</p>}
       </div>
       <FormError>{errors.form}</FormError>

@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import {
-  BadgeIndianRupee, BookOpen, BookUp, CalendarDays, ClipboardList, House, IdCard, LayoutDashboard, LibraryBig,
+  BadgeIndianRupee, BookOpen, Gavel, BookUp, CalendarDays, ClipboardList, House, IdCard, LayoutDashboard, LibraryBig,
   LogOut, Megaphone, Palette, Settings, ShieldCheck, ShoppingBasket, UserRound, Users, Wallet, X,
 } from "lucide-react";
 import { useApi } from "@/lib/api";
@@ -54,16 +54,18 @@ export function AppDrawer({ open, onClose }: { open: boolean; onClose: () => voi
   ];
   const admin: Item[] = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin?s=desk", label: "Issue & return", icon: BookUp },
-    { href: "/admin?s=requests", label: "Requests", icon: ClipboardList },
-    { href: "/admin?s=members", label: "Members", icon: Users },
-    { href: "/admin?s=payments", label: "Payments", icon: BadgeIndianRupee },
-    { href: "/admin?s=books", label: "Catalogue", icon: BookOpen },
-    { href: "/admin?s=classes", label: "Classes", icon: Palette },
-    { href: "/admin?s=events", label: "Events", icon: CalendarDays },
-    { href: "/admin?s=products", label: "Vipani", icon: ShoppingBasket },
-    { href: "/admin?s=notices", label: "Notices", icon: Megaphone },
-    { href: "/admin?s=settings", label: "Settings", icon: Settings },
+    { href: "/admin/desk", label: "Issue & return", icon: BookUp },
+    { href: "/admin/requests", label: "Requests", icon: ClipboardList },
+    { href: "/admin/members", label: "Members", icon: Users },
+    { href: "/admin/payments", label: "Payments", icon: BadgeIndianRupee },
+    { href: "/admin/books", label: "Books", icon: BookOpen },
+    { href: "/admin/auctions", label: "Live bidding", icon: Gavel },
+    { href: "/admin/accounts", label: "Accounts", icon: Wallet },
+    { href: "/admin/classes", label: "Classes", icon: Palette },
+    { href: "/admin/events", label: "Events", icon: CalendarDays },
+    { href: "/admin/products", label: "Vipani", icon: ShoppingBasket },
+    { href: "/admin/notices", label: "Notices", icon: Megaphone },
+    { href: "/admin/settings", label: "Settings", icon: Settings },
   ];
 
   const signOut = async () => {

@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import { Ban, BookOpen, Check, Copy, ExternalLink, KeyRound, Megaphone, Pencil, Plus, Receipt, RotateCcw, ShieldCheck, Trash2, Undo2, UserPlus, X } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { useSession } from "@/lib/session";
@@ -11,20 +10,8 @@ import { clean, SCHEMA, toForm, type AnyItem, type FieldSpec } from "@/lib/schem
 import type { AdminOverview, ContentType, Payment, PaymentKind, User } from "@/lib/types";
 import { Sheet } from "../forms";
 import { BookCover } from "../ui";
+import { usePending } from "./AdminShell";
 import { Btn, Chips, EmptyRow, inputBox, Labeled, matchText, Panel, SearchBox, Stat, useRun } from "./kit";
-
-/** Open a sheet when ?new=1 is in the URL (from the dashboard shortcuts), then drop the flag. */
-function useNewFlag(open: () => void) {
-  const params = useSearchParams();
-  const router = useRouter();
-  useEffect(() => {
-    if (params.get("new") === "1") {
-      open();
-      const q = new URLSearchParams(params); q.delete("new");
-      router.replace(`/admin?${q}`, { scroll: false });
-    }
-  }, [params, router, open]);
-}
 
 /* ───────── Members ───────── */
 
@@ -36,8 +23,7 @@ export function MembersPanel({ d }: { d: AdminOverview }) {
   const [tab, setTab] = useState<(typeof MEMBER_TABS)[number]>("All");
   const [open, setOpen] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
-  const openAdd = useMemo(() => () => setAdding(true), []);
-  useNewFlag(openAdd);
+  usePending("members", (p) => { if (p.action === "new") setAdding(true); if (p.id) setOpen(p.id); if (p.q) setQ(p.q); });
 
   const dueOf = (m: User) => d.payments.filter((p) => p.card === m.card && p.status === "due").reduce((s, p) => s + p.amount, 0);
   const lateOf = (m: User) => d.loans.filter((l) => l.card === m.card && !l.returnedAt && daysLeft(l.dueAt) < 0).length;
@@ -308,8 +294,7 @@ export function ContentManager({ d, type }: { d: AdminOverview; type: ContentTyp
   const spec = SCHEMA[type];
   const [q, setQ] = useState("");
   const [editing, setEditing] = useState<AnyItem | "new" | null>(null);
-  const openNew = useMemo(() => () => setEditing("new"), []);
-  useNewFlag(openNew);
+  usePending(type === "books" ? "books" : type === "classes" ? "classes" : type === "events" ? "events" : "products", (p) => { if (p.action === "new") setEditing("new"); });
   const items = d[type] as AnyItem[];
   const list = items.filter((i) => matchText(q, ...Object.values(i).map((v) => (typeof v === "string" ? v : undefined))));
 
@@ -368,9 +353,9 @@ function FieldInput({ f, value, set }: { f: FieldSpec; value: unknown; set: (v: 
   );
 }
 
-function ItemEditor({ type, item, r, onClose }: { type: ContentType; item: AnyItem | null; r: ReturnType<typeof useRun>; onClose: () => void }) {
+export function ItemEditor({ type, item, r, onClose, preset }: { type: ContentType; item: AnyItem | null; r: ReturnType<typeof useRun>; onClose: () => void; preset?: Record<string, unknown> }) {
   const spec = SCHEMA[type];
-  const [v, setV] = useState<Record<string, unknown>>(() => toForm(type, item as Record<string, unknown> | null));
+  const [v, setV] = useState<Record<string, unknown>>(() => ({ ...toForm(type, item as Record<string, unknown> | null), ...(item ? {} : preset) }));
   const [err, setErr] = useState<{ field?: string; msg?: string }>({});
   const [busy, setBusy] = useState(false);
 
@@ -392,14 +377,14 @@ function ItemEditor({ type, item, r, onClose }: { type: ContentType; item: AnyIt
 
   return (
     <Sheet title={item ? `Edit ${spec.noun}` : `Add a ${spec.noun}`} subtitle={item ? ("title" in item ? item.title : item.name) : undefined} onClose={onClose}>
-      <form noValidate onSubmit={save} className="grid grid-cols-2 gap-3">
+      <form noValidate onSubmit={save} className="grid grid-cols-2 gap-x-4 gap-y-4 pt-1">
         {spec.fields.filter((f) => !f.when || v[f.when]).map((f) => (
           <Labeled key={f.key} label={`${f.label}${f.required ? "" : " (optional)"}`} hint={f.hint} error={err.field === f.key ? err.msg : undefined} className={f.half ? "col-span-1" : "col-span-2"}>
             <FieldInput f={f} value={v[f.key]} set={(x) => { setV((s) => ({ ...s, [f.key]: x })); if (err.field === f.key) setErr({}); }} />
           </Labeled>
         ))}
         {err.msg && !spec.fields.some((f) => f.key === err.field) && <p className="col-span-2 text-[14px] text-laterite-700">{err.msg}</p>}
-        <div className="col-span-2 flex gap-2 pt-1">
+        <div className="sticky bottom-0 z-10 col-span-2 -mx-1 mt-1 flex gap-2 border-t border-line/70 bg-mist px-1 pt-4">
           {item && <Btn tone="danger" icon={Trash2} busy={r.busy === `del-${item.id}`} onClick={remove}>Delete</Btn>}
           <Btn type="submit" busy={busy} className="flex-1 py-3 text-[15px]">{item ? "Save changes" : `Add ${spec.noun}`}</Btn>
         </div>

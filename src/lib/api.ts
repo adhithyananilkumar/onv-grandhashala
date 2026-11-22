@@ -76,5 +76,14 @@ export const prefetchApi = (url: string) => load(url);
 /** All public content (books, classes, events, Vipani). */
 export const useCatalog = () => useApi<Catalog>("/api/catalog");
 
+/** While `active`, refetch all public content every few seconds (a live auction on screen). */
+export function useLivePoll(active: boolean, ms = 4000, until?: string) {
+  useEffect(() => {
+    if (!active) return;
+    const id = setInterval(() => { if (!until || Date.now() < new Date(until).getTime() + 5000) invalidate("/api/catalog"); }, ms);
+    return () => clearInterval(id);
+  }, [active, ms, until]);
+}
+
 /** After changing content, refetch everything that shows it. */
 export const refreshContent = () => invalidate("/api/catalog", "/api/admin", "/api/me");

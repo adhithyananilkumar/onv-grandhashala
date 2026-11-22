@@ -5,6 +5,16 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   // The dev badge sits on top of the mobile dock; keep the screen clean.
   devIndicators: false,
+  // The admin console is private: never indexed, cached, or shown inside another site's frame.
+  async headers() {
+    const private_ = [
+      { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+      { key: "Cache-Control", value: "no-store" },
+      { key: "X-Frame-Options", value: "DENY" },
+      { key: "Referrer-Policy", value: "same-origin" },
+    ];
+    return [{ source: "/admin/:path*", headers: private_ }, { source: "/api/admin/:path*", headers: private_ }];
+  },
   turbopack: {
     rules: {
       "*.css": {

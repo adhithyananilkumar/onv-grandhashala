@@ -14,6 +14,9 @@ export const GET = handle(async () => {
     payments: [...db.payments].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
     notices: [...db.notices].sort((a, b) => b.at.localeCompare(a.at)),
     settings: db.settings,
+    guests: [...(db.guests ?? [])].sort((a, b) => b.at.localeCompare(a.at)),
+    ledger: [...(db.ledger ?? [])].sort((a, b) => b.date.localeCompare(a.date)),
+    visits: db.visits ?? {},
   };
   return ok(out);
 });

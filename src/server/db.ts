@@ -5,7 +5,7 @@ import { promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import seed from "@/mock/db.json";
-import type { Book, ClassItem, Comment, EventItem, LibRequest, Loan, Notice, Payment, Product, Settings, User } from "@/lib/types";
+import type { Book, ClassItem, Comment, EventItem, GuestReg, LedgerEntry, LibRequest, Loan, Notice, Payment, Product, Settings, User } from "@/lib/types";
 
 export type StoredUser = User & { salt: string; hash: string; fails: number; lockUntil: number };
 export type Session = { card: string; exp: number };
@@ -23,16 +23,25 @@ export type DB = {
   payments: Payment[];
   notices: Notice[];
   comments: Comment[];
+  /** Added later, so older saved databases may not have them yet. */
+  guests?: GuestReg[];
+  ledger?: LedgerEntry[];
+  visits?: Record<string, number>;
 };
 
 let file = process.env.MOCK_DB_PATH ?? path.join(process.cwd(), ".mock-data", "db.json");
 
 async function load(): Promise<DB> {
+  let db: DB;
   try {
-    return JSON.parse(await fs.readFile(/*turbopackIgnore: true*/ file, "utf8")) as DB;
+    db = JSON.parse(await fs.readFile(/*turbopackIgnore: true*/ file, "utf8")) as DB;
   } catch {
-    return structuredClone(seed) as unknown as DB;
+    db = structuredClone(seed) as unknown as DB;
   }
+  db.guests ??= [];
+  db.ledger ??= [];
+  db.visits ??= {};
+  return db;
 }
 
 async function save(db: DB) {
@@ -77,4 +86,12 @@ export function fineFor(l: Loan, perDay: number, now = Date.now()) {
   const end = l.returnedAt ? new Date(l.returnedAt).getTime() : now;
   const late = Math.floor((end - new Date(l.dueAt).getTime()) / DAY);
   return late > 0 ? late * perDay : 0;
+}
+
+/** People booked into an event: members' registrations plus walk-ins added at the desk. */
+export function headcount(db: DB, eventId: string) {
+  const members = db.requests
+    .filter((x) => x.kind === "Register" && x.itemId === eventId && ["pending", "confirmed", "ready", "done"].includes(x.status))
+    .reduce((s, x) => s + (parseInt(x.detail ?? "1", 10) || 1), 0);
+  return members + (db.guests ?? []).filter((g) => g.eventId === eventId).reduce((s, g) => s + g.people, 0);
 }

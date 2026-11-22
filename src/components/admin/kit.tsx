@@ -109,14 +109,19 @@ export function EmptyRow({ children }: { children: React.ReactNode }) {
   return <p className="rounded-2xl bg-mist px-4 py-6 text-center text-[14.5px] text-muted">{children}</p>;
 }
 
-export const inputBox = "h-11 w-full rounded-2xl bg-mist px-3.5 text-[15px] ring-2 ring-transparent placeholder:text-muted focus:bg-card focus:ring-royal focus:outline-none";
+export const inputBox = "h-12 w-full rounded-xl border border-line bg-card px-3.5 text-[15.5px] shadow-[0_1px_0_rgba(0,0,0,0.03)] transition placeholder:text-muted/70 hover:border-ink/25 focus:border-royal focus:ring-4 focus:ring-royal/15 focus:outline-none";
 
 export function Labeled({ label, error, hint, children, className = "" }: { label: string; error?: string; hint?: string; children: React.ReactNode; className?: string }) {
+  const optional = label.endsWith(" (optional)");
+  const text = optional ? label.slice(0, -" (optional)".length) : label;
   return (
     <label className={`block ${className}`}>
-      <span className="mb-1 block text-[13px] font-semibold text-ink-2">{label}</span>
+      <span className="mb-1.5 flex items-baseline gap-1.5 text-[13.5px] font-semibold text-ink-2">
+        {text}
+        {optional && <span className="text-[12px] font-normal text-muted">optional</span>}
+      </span>
       {children}
-      {error ? <span className="mt-1 block text-[13px] font-medium text-laterite" role="alert">{error}</span> : hint ? <span className="mt-1 block text-[12.5px] text-muted">{hint}</span> : null}
+      {error ? <span className="mt-1.5 block text-[13px] font-medium text-laterite" role="alert">{error}</span> : hint ? <span className="mt-1.5 block text-[12.5px] text-muted">{hint}</span> : null}
     </label>
   );
 }
